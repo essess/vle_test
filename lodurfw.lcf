@@ -1,0 +1,13 @@
+MEMORY { ram: org = 0x40000000, len = 0x17800 }
+
+SECTIONS
+{
+    GROUP : 
+    {
+        .init_vle (VLECODE) : { *(.init) *(.init_vle) }
+        .text_vle (VLECODE) : { *(.text) *(.text_vle) }
+        .init  : {}       /**< automagically gen'd */
+        .ctors : {}       /*   by linker           */
+        .dtors : {}       /*                       */
+    } > ram 
+}
