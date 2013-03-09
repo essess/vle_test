@@ -4,6 +4,8 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "swt.i"
+        .include    "siu.i"
+ALLINT  .equ        ~(%1<<17|%1<<15|%1<<12|%1<<9)
 # -----------------------------------------------------------------------------
 #   @public
 #   VLE entry point for the device side firmware of the lodur app:
@@ -28,14 +30,24 @@ lodurfw:
         mfmsr       r1                      ;< r-m-w, turn on SPE apu
         se_bseti    r1, 6                   ;< see note 2
         mtmsr       r1
-; TODO : init flash wait states (why - we're executing from ram!)
-; TODO : lockup fmpll
-; TODO : ecc wipe (w/side effect of init'ing .bss)
-; TODO : set rsp (now that ram ecc is valid)
-; TODO : loadup .data (needed for ram images? nope)
-        wrteei      1                       ;< unmask external interrupts
+        ; TODO                              ;< lockup fmpll
+        ; TODO                              ;< ecc wipe (w/side effect of init'ing .bss)
+        .extern     _stack_addr             ;< linker defined, see .lcf
+        e_lis       rsp, _stack_addr@h      ;< set rsp since ecc is valid
+        e_or2i      rsp, _stack_addr@l
         .extern     main
-        se_b        main
+        se_bl       main
+@restart:
+        mfmsr       r1                      ;< mask ALL int sources:
+        e_lis       r2, ALLINT@h            ;  CE, EE, ME, DE
+        e_or2i      r2, ALLINT@l
+        se_and      r1, r2
+        mtmsr       r1
+        e_lis       r1, SSR@h
+        e_lis       r2, SIU_BASE@ha
+        se_stw      r1, SIU_SRCR@l(r2)      ;< bye
+        wait
+        se_b        @restart
 # -----------------------------------------------------------------------------
 # note 0: TCR[WRC] can only be cleared by a reset. The BAM has turned it on for
 #         us, so the best we can do at this point is to simply put the trip

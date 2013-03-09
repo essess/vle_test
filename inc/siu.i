@@ -7,6 +7,15 @@
 # BASE: system integration unit -----------------------------------------------
 SIU_BASE            .equ    $c3f90000
 
+# SRCR : system reset control register ----------------------------------------
+                                            ;
+SSR                 .equ    %1<<31          ;< software system reset
+SER                 .equ    %1<<30          ;< software external reset
+CRE                 .equ    %1<<15          ;< checkstop reset enable
+
+SIU_SRCR_OFFSET     .equ    $0010
+SIU_SRCR            .equ    SIU_BASE+SIU_SRCR_OFFSET
+
 # PCR: pad configuration register ---------------------------------------------
                                             ;  pin assignment
 PA_PRIM             .equ    %0001 << 10     ;< primary function
