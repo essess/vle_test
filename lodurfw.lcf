@@ -1,13 +1,24 @@
 MEMORY { ram: org = 0x40000000, len = 0x17800 }
-
 SECTIONS
 {
-    GROUP : 
+    GROUP :
     {
-        .init_vle (VLECODE) : { *(.init) *(.init_vle) }
-        .text_vle (VLECODE) : { *(.text) *(.text_vle) }
-        .init  : {}       /**< automagically gen'd */
-        .ctors : {}       /*   by linker           */
-        .dtors : {}       /*                       */
-    } > ram 
+        .init_vle (VLECODE) : { *(.init_vle) }
+        .text_vle (VLECODE) : { *(.text_vle) }
+        .rodata   (CONST) ALIGN(4) : { *(.rodata) }
+        .data     (DATA)  ALIGN(4) : { *(.data)   }
+        _ecc_init_start = ALIGN(4);
+        .bss (BSS) ALIGN(4) : { *(.bss) }
+        _stack_end = ALIGN(8);
+        _stack_addr  = ADDR(ram) + SIZEOF(ram);
+        _stack_size = _stack_addr - _stack_end;
+        _ecc_init_end = _stack_addr;
+        _ecc_init_size = _ecc_init_end - _ecc_init_start;
+    } > ram
+
+    /* automagically gen'd by linker, but unused. Here       */
+    /* to supress warnings.                                  */
+    .init  : {}
+    .ctors : {}
+    .dtors : {}
 }
