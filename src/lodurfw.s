@@ -9,20 +9,47 @@
 #   VLE entry point for the device side firmware of the lodur app:
 #       https://bitbucket.org/essess/lodur
 # -----------------------------------------------------------------------------
+        .section    .init_vle, text_vle
+        .public     lodurfw
+        .type       lodurfw, @function
+lodurfw:
+        e_lis       r1, (MAP0_ENAB|MAP1_ENAB|MAP2_ENAB)@h
+        e_lis       r2, SWT_BASE@ha
+        e_stw       r1, SWT_CR@l(r2)        ;< disable swt
+        se_li       r1, 0                   ;< kill booke wdt as best we can,
+        mttcr       r1                      ;  see note 0
+        mfhid0      r1                      ;< r-m-w, branch prediction enb
+        se_bclri    r1, 6                   ;  for both directions
+        se_bclri    r1, 7
+        mthid0      r1
+        e_li        r1, ( %1<<0 | %1<<9 )   ;< enb and flush btb
+;       mtbucsr     r1                      ;< see note 1
+        mtspr       1013, r1
+        mfmsr       r1                      ;< r-m-w, turn on SPE apu
+        se_bseti    r1, 6                   ;< see note 2
+        mtmsr       r1
+; TODO : init flash wait states (why - we're executing from ram!)
+; TODO : lockup fmpll
+; TODO : ecc wipe (w/side effect of init'ing .bss)
+; TODO : set rsp (now that ram ecc is valid)
+; TODO : loadup .data (needed for ram images? nope)
+        wrteei      1                       ;< unmask external interrupts
+        .extern     main
+        se_b        main
+# -----------------------------------------------------------------------------
 # note 0: TCR[WRC] can only be cleared by a reset. The BAM has turned it on for
 #         us, so the best we can do at this point is to simply put the trip
 #         point so far out in time that it won't trigger itself.
 # -----------------------------------------------------------------------------
-        .section    .init_vle, text_vle
-        .public     lodurfw
-        .type       lodurfw, @function
-lodurfw: 
-        e_lis       r1, (MAP0_ENAB|MAP1_ENAB|MAP2_ENAB)@h
-        e_lis       r2, SWT_BASE@ha
-        e_stw       r1, SWT_CR@l(r2)        ;< disable swt, but
-        se_li       r1, 0                   ;< kill booke wdt as best we can,
-        mttcr       r1                      ;  see note 0
-@loop:  se_b        @loop
+# note 1: turns out that mwerks generates the wrong code for the mtbucsr
+#         instruction; mtspr 1008, Rn. It should be spr 1013 so it's done
+#         manually here. Also note that HID0 is 1008, and that was implied
+#         immediately before in the last mtxxx instruction. I think that the
+#         assembler has no idea what the bucsr register is and silently uses
+#         the last spr value (state) from the previous mthid0 register (in
+#         which it does know as 1008)
+# -----------------------------------------------------------------------------
+# note 2: sometimes(!) this instruction generates as se_bseti r1, 3
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
