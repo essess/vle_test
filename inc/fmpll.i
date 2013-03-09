@@ -3,17 +3,7 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-#   @public
-#   main program:
-#       - blr to 'quit', the core will reset itself
-#       - rsp points to top of stack
-# -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     main
-        .type       main, @function
-main:   wrteei      1
-        se_nop
-        se_blr
+
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
