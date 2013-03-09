@@ -5,7 +5,19 @@
 # -----------------------------------------------------------------------------
         .include    "swt.i"
         .include    "siu.i"
-ALLINT  .equ        ~(%1<<17|%1<<15|%1<<12|%1<<9)
+        .include    "fmpll.i"
+
+INTDIS_ANDMASK      .equ        ~( %1<<17 | %1<<15 | %1<<12 |%1<<9 )
+
+EPREDIV             .equ        ( 1-1 << EPREDIV_LSHIFT)  ;< 8MHz/1 * 40 =
+EMFD                .equ        ( 40 << EMFD_LSHIFT )     ;< vco = 320 MHz
+ESYNCR1_VAL         .equ        ( EMODE | CLKCFG_NXR | EPREDIV | EMFD )
+
+ESYNCR2_VAL         .equ        ( LOCDIS | LOLRDIS | LOCRDIS | LOLIRQDIS | \
+                                  LOCIRQDIS |ERFD_DIV4 )  ; vco/4 = 80 MHz clk
+
+FMPLL_TO            .equ        300                       ; ~160 loops typ.
+
 # -----------------------------------------------------------------------------
 #   @public
 #   VLE entry point for the device side firmware of the lodur app:
@@ -30,24 +42,36 @@ lodurfw:
         mfmsr       r1                      ;< r-m-w, turn on SPE apu
         se_bseti    r1, 6                   ;< see note 2
         mtmsr       r1
-        ; TODO                              ;< lockup fmpll
-        ; TODO                              ;< ecc wipe (w/side effect of init'ing .bss)
+        e_lis       r2, FMPLL_BASE@ha       ;< loadup fmpll defaults
+        e_lis       r1, ESYNCR1_VAL@h
+        e_or2i      r1, ESYNCR1_VAL@l
+        se_stw      r1, FMPLL_ESYNCR1@l(r2)
+        e_lis       r1, ESYNCR2_VAL@h
+        e_or2i      r1, ESYNCR2_VAL@l
+        se_stw      r1, FMPLL_ESYNCR2@l(r2)
+        e_li        r1, FMPLL_TO            ;< wait for lock or timeout
+        mtctr       r1
+@wait:  se_lwz      r1, FMPLL_SYNSR@l(r2)
+        se_btsti    r1, 28                  ;< SYNSR[LOCK]
+        se_bne+     @next                   ;< locked, move on
+        e_bdnz      @wait
+        trap                                ;< lock fail, trap to dbg if present
+@next:  ; TODO                              ;< ecc wipe (w/side effect of init'ing .bss)
         .extern     _stack_addr             ;< linker defined, see .lcf
         e_lis       rsp, _stack_addr@h      ;< set rsp since ecc is valid
         e_or2i      rsp, _stack_addr@l
         .extern     main
         se_bl       main
-@restart:
         mfmsr       r1                      ;< mask ALL int sources:
-        e_lis       r2, ALLINT@h            ;  CE, EE, ME, DE
-        e_or2i      r2, ALLINT@l
+        e_lis       r2, INTDIS_ANDMASK@h    ;  CE, EE, ME, DE
+        e_or2i      r2, INTDIS_ANDMASK@l
         se_and      r1, r2
         mtmsr       r1
         e_lis       r1, SSR@h
-        e_lis       r2, SIU_BASE@ha
+        e_lis       r2, SIU_SRCR@ha
         se_stw      r1, SIU_SRCR@l(r2)      ;< bye
         wait
-        se_b        @restart
+        se_blr
 # -----------------------------------------------------------------------------
 # note 0: TCR[WRC] can only be cleared by a reset. The BAM has turned it on for
 #         us, so the best we can do at this point is to simply put the trip
