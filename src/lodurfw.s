@@ -7,6 +7,10 @@
         .include    "siu.i"
         .include    "fmpll.i"
 
+        .extern     main
+        .extern     _ecc_init_wordsize      ;< linker defined, see .lcf
+        .extern     _ecc_init_end           ;<
+
 INTDIS_ANDMASK      .equ        ~( %1<<17 | %1<<15 | %1<<12 |%1<<9 )
 
 EPREDIV             .equ        ( 1-1 << EPREDIV_LSHIFT)  ;< 8MHz/1 * 40 =
@@ -37,8 +41,7 @@ lodurfw:
         se_bclri    r1, 7
         mthid0      r1
         e_li        r1, ( %1<<0 | %1<<9 )   ;< enb and flush btb
-;       mtbucsr     r1                      ;< see note 1
-        mtspr       1013, r1
+        mtspr       1013, r1                ;< see note 1
         mfmsr       r1                      ;< r-m-w, turn on SPE apu
         se_bseti    r1, 6                   ;< see note 2
         mtmsr       r1
@@ -53,15 +56,19 @@ lodurfw:
         mtctr       r1
 @wait:  se_lwz      r1, FMPLL_SYNSR@l(r2)
         se_btsti    r1, 28                  ;< SYNSR[LOCK]
-        se_bne+     @next                   ;< locked, move on
+        se_bne+     @ecc                    ;< locked, move on
         e_bdnz      @wait
         trap                                ;< lock fail, trap to dbg if present
-@next:  ; TODO                              ;< ecc wipe (w/side effect of init'ing .bss)
-        .extern     _stack_addr             ;< linker defined, see .lcf
-        e_lis       rsp, _stack_addr@h      ;< set rsp since ecc is valid
-        e_or2i      rsp, _stack_addr@l
-        .extern     main
-        se_bl       main
+@ecc:   e_lis       r1, _ecc_init_wordsize@h
+        e_or2i      r1, _ecc_init_wordsize@l
+        mtctr       r1                      ;< loadup WORD size count
+        e_lis       r2, _ecc_init_end@h     ;< loadup starting address
+        e_or2i      r2, _ecc_init_end@l     ;
+        se_mr       rsp, r2                 ;< do a convienient load of tos
+        se_li       r3, 0                   ;< wipe as 0 to clear .bss as
+@next:  e_stwu      r3, -4(r2)              ;  nifty side effect
+        e_bdnz      @next
+        se_bl       main                    ;< run app
         mfmsr       r1                      ;< mask ALL int sources:
         e_lis       r2, INTDIS_ANDMASK@h    ;  CE, EE, ME, DE
         e_or2i      r2, INTDIS_ANDMASK@l

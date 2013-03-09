@@ -14,6 +14,7 @@ SECTIONS
         _stack_size = _stack_addr - _stack_end;
         _ecc_init_end = _stack_addr;
         _ecc_init_size = _ecc_init_end - _ecc_init_start;
+        _ecc_init_wordsize = (_ecc_init_size/4);
     } > ram
 
     /* automagically gen'd by linker, but unused. Here       */
