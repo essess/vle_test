@@ -5,8 +5,8 @@ SECTIONS
     {
         .init_vle (VLECODE) : { *(.init_vle) }
         .text_vle (VLECODE) : { *(.text_vle) }
-        .rodata   (CONST) ALIGN(4) : { *(.rodata) }
-        .data     (DATA)  ALIGN(4) : { *(.data)   }
+        .rodata   (CONST)   : { *(.rodata) }
+        .data     (DATA)    : { *(.data)   }
         _ecc_init_start = ALIGN(4);
         .bss (BSS) ALIGN(4) : { *(.bss) }
         _stack_end = ALIGN(8);
