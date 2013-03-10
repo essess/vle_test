@@ -39,6 +39,7 @@ lodurfw:
         mfhid0      r1                      ;< r-m-w, branch prediction enb
         se_bclri    r1, 6                   ;  for both directions
         se_bclri    r1, 7
+        se_bseti    r1, 14                  ;< clr reservations on irq
         mthid0      r1
         e_li        r1, ( %1<<0 | %1<<9 )   ;< enb and flush btb
         mtspr       1013, r1                ;< see note 1
