@@ -53,15 +53,15 @@ lodurfw:
         e_or2i      r1, ESYNCR2_VAL@l
         se_stw      r1, FMPLL_ESYNCR2@l(r2)
         e_li        r1, FMPLL_TO            ;< wait for lock or timeout
-        mtctr       r1
+        se_mtctr    r1
 @wait:  se_lwz      r1, FMPLL_SYNSR@l(r2)
         se_btsti    r1, 28                  ;< SYNSR[LOCK]
-        se_bne+     @ecc                    ;< locked, move on
+        se_bne      @ecc                    ;< locked, move on
         e_bdnz      @wait
         trap                                ;< lock fail, trap to dbg if present
 @ecc:   e_lis       r1, _ecc_init_wordsize@h
         e_or2i      r1, _ecc_init_wordsize@l
-        mtctr       r1                      ;< loadup WORD size count
+        se_mtctr    r1                      ;< loadup WORD size count
         e_lis       r2, _ecc_init_end@h     ;< loadup starting address
         e_or2i      r2, _ecc_init_end@l     ;
         se_mr       rsp, r2                 ;< do a convienient load of tos
@@ -93,6 +93,9 @@ lodurfw:
 #         which it does know as 1008)
 # -----------------------------------------------------------------------------
 # note 2: sometimes(!) this instruction generates as se_bseti r1, 3
+# -----------------------------------------------------------------------------
+# note 3: technically, ecc init only needs to be done during a por - this
+#         may be an area for future optimization.
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
