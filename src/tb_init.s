@@ -3,28 +3,16 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     _startof_ram            ;< linker supplied sym
-        .extern     dec_init
-        .extern     tb_init
-        .extern     tb_start
-# -----------------------------------------------------------------------------
 #   @public
-#   main program:
-#       - blr to 'quit', the core will reset itself
-#       - rsp points to top of stack
+#   timebase reset/init
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     main
-        .type       main, @function
-main:   ; TODO push lr
-        e_lis       r2, _startof_ram@h      ;< setup int base
-        mtivpr      r2                      ;
-        se_bl       dec_init
-        se_bl       tb_init
-        se_bl       tb_start
-        wrteei      1                       ;< unmask everything
-        ; TODO bl app
-        ; TODO pop lr
+        .public     tb_init
+        .type       tb_init, @function
+tb_init:
+        se_li       r2, 0
+        mttbu       r2                      ;< wipe timebase
+        mttbl       r2
         se_blr
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
