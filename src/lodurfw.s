@@ -9,7 +9,10 @@
 
         .extern     main
         .extern     _ecc_init_wordsize      ;< linker defined, see .lcf
-        .extern     _ecc_init_end           ;<
+        .extern     _ecc_init_end           ;   |
+        .extern     _f_bss                  ;   |
+        .extern     _f_data                 ;   |
+        .extern     _f_rodata               ; --+
 
 INTDIS_ANDMASK      .equ        ~( %1<<17 | %1<<15 | %1<<12 |%1<<9 )
 
@@ -20,7 +23,7 @@ ESYNCR1_VAL         .equ        ( EMODE | CLKCFG_NXR | EPREDIV | EMFD )
 ESYNCR2_VAL         .equ        ( LOCDIS | LOLRDIS | LOCRDIS | LOLIRQDIS | \
                                   LOCIRQDIS |ERFD_DIV4 )  ; vco/4 = 80 MHz clk
 
-FMPLL_TO            .equ        300                       ; ~160 loops typ.
+FMPLL_TO            .equ        160*2                     ; ~160 loops typ.
 
 # -----------------------------------------------------------------------------
 #   @public
@@ -69,6 +72,9 @@ lodurfw:
         se_li       r3, 0                   ;< wipe as 0 to clear .bss as
 @next:  e_stwu      r3, -4(r2)              ;  nifty side effect
         e_bdnz      @next
+        e_lis       r24, _f_bss@ha          ;< loadup section bases, use @ha
+        e_lis       r25, _f_data@ha         ;  because reg offsets are sign
+        e_lis       r26, _f_rodata@ha       ;  extended
         se_bl       main                    ;< run app
         mfmsr       r1                      ;< mask ALL int sources:
         e_lis       r2, INTDIS_ANDMASK@h    ;  CE, EE, ME, DE

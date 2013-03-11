@@ -16,7 +16,9 @@
         .section    .text_vle
         .public     main
         .type       main, @function
-main:   ; TODO push lr
+main:   e_stwu      rsp, -8(rsp)
+        se_mflr     r2
+        se_stw      r2, 4(rsp)
         e_lis       r2, _startof_ram@h      ;< setup int base
         mtivpr      r2                      ;
         se_bl       dec_init
@@ -24,7 +26,12 @@ main:   ; TODO push lr
         se_bl       tb_start
         wrteei      1                       ;< unmask everything
         ; TODO bl app
-        ; TODO pop lr
+@l:     wait
+        se_b        @l
+        ;
+        se_lwz      r2, 4(rsp)
+        se_mtlr     r2
+        se_lwz      rsp, 0(rsp)
         se_blr
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.

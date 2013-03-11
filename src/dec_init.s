@@ -4,6 +4,11 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .extern     dec_handler
+
+SYSCLK  .equ        80000000
+HZ      .equ        1000
+DECAR   .equ        (SYSCLK/HZ)-1
+
 # -----------------------------------------------------------------------------
 #   @public
 #   decrementer init:
@@ -16,8 +21,13 @@
 dec_init:
         e_or2i      r2, dec_handler@l
         mtivor10    r2                      ;< register handler
-; touch tcr
-; touch decar
+        e_li        r2, DECAR               ;< LI20 field
+        mtdecar     r2                      ;< loadup reload value
+        mtdec       r2                      ;< loadup initial value
+        mftcr       r2
+        se_bseti    r2, 5                   ;< TCR[DIE] - dec int enb
+        se_bseti    r2, 9                   ;< TCR[ARE] - autoreload
+        mttcr       r2
         se_blr
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
