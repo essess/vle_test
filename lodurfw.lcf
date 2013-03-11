@@ -1,8 +1,9 @@
-MEMORY { ram: org = 0x40000000, len = 0x17800 }
+MEMORY { ram: org = 0x40000000, len = 0x17800 }     
 SECTIONS
 {
     GROUP :
     {
+        _startof_ram = .;
         .init_vle (VLECODE) : { *(.init_vle) }
         .text_vle (VLECODE) : { *(.text_vle) }
         .rodata   (CONST)   : { *(.rodata) }
