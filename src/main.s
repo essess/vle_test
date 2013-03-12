@@ -7,6 +7,7 @@
         .extern     dec_init
         .extern     tb_init
         .extern     tb_start
+        .extern     lodurfw
 # -----------------------------------------------------------------------------
 #   @public
 #   main program:
@@ -25,10 +26,7 @@ main:   e_stwu      rsp, -8(rsp)
         se_bl       tb_init
         se_bl       tb_start
         wrteei      1                       ;< unmask everything
-        ; TODO bl app
-@l:     wait
-        se_b        @l
-        ;
+        se_bl       lodurfw                 ;< fire up app
         se_lwz      r2, 4(rsp)
         se_mtlr     r2
         se_lwz      rsp, 0(rsp)
