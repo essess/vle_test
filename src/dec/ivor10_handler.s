@@ -11,10 +11,10 @@
 #   consider this as a point of optimization to keep int latency low.
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     dec_handler
-        .type       dec_handler, @function
+        .public     ivor10_handler
+        .type       ivor10_handler, @function
         .align      16
-dec_handler:
+ivor10_handler:
         e_stwu      rsp, -8(rsp)            ;< create frame
         se_stw      r2, 4(rsp)              ;< push r2
         se_bgeni    r2, 4                   

@@ -3,7 +3,7 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     dec_handler
+        .extern     ivor10_handler
 
 SYSCLK  .equ        80000000
 HZ      .equ        1000
@@ -19,7 +19,7 @@ DECAR   .equ        (SYSCLK/HZ)-1
         .public     dec_init
         .type       dec_init, @function
 dec_init:
-        e_or2i      r2, dec_handler@l
+        e_or2i      r2, ivor10_handler@l
         mtivor10    r2                      ;< register handler
         e_li        r2, DECAR               ;< LI20 field
         mtdecar     r2                      ;< loadup reload value

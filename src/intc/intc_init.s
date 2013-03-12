@@ -3,35 +3,17 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     _startof_ram            ;< linker supplied sym
-        .extern     intc_init
-        .extern     dec_init
-        .extern     tb_init
-        .extern     tb_start
-        .extern     lodurfw
+        .extern     ivor4_handler
 # -----------------------------------------------------------------------------
 #   @public
-#   main program:
-#       - blr to 'quit', the core will reset itself
-#       - rsp points to top of stack
+#   intc_init, using software mode
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     main
-        .type       main, @function
-main:   e_stwu      rsp, -8(rsp)
-        se_mflr     r2
-        se_stw      r2, 4(rsp)
-        e_lis       r2, _startof_ram@h      ;< setup int base
-        mtivpr      r2                      ;
-        se_bl       intc_init
-        se_bl       dec_init
-        se_bl       tb_init
-        se_bl       tb_start
-        wrteei      1                       ;< unmask everything
-        se_bl       lodurfw                 ;< fire up app
-        se_lwz      r2, 4(rsp)
-        se_mtlr     r2
-        se_lwz      rsp, 0(rsp)
+        .public     intc_init
+        .type       intc_init, @function
+intc_init:
+        e_or2i      r2, ivor4_handler@l
+        mtivor4     r2                      ;< register handler
         se_blr
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
