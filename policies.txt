@@ -18,6 +18,13 @@ real rule here is that no one 'reaches back' into the original callers stack fra
 
 -------
 
+INTC/ivor4 interrupt handling guidelines:
+
+treat ALL registers except for r2,r3 as non volatile on entry to your handler. this means SAVE everything you're
+going to use before blr'ing. the ivor4 handler will make sure r2,r3 is restored before rfi'ing
+
+-------
+
 stack usage guideline:
 
 typically:

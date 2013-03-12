@@ -3,19 +3,25 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     ivor4_handler
+;        .extern     ; lots of funcs!
 # -----------------------------------------------------------------------------
 #   @public
-#   intc_init, using software vector mode - the boilerplate code (and it's
-#   size) is not a big enough reason for slightly less latency gained
+#   vector address table for all external interrupts
+# -----------------------------------------------------------------------------
+        .section    .rodata
+        .public     intc_vectbl
+        .type       intc_vectbl, @object
+intc_vectbl:
+vec0:   .long       intc_defaultvec
+
+# -----------------------------------------------------------------------------
+#   @public
+#   default vector handler
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     intc_init
-        .type       intc_init, @function
-intc_init:
-        e_or2i      r2, ivor4_handler@l
-        mtivor4     r2                      ;< register handler
-        ; lower pri in INTC_CPR to 0
+        .type       intc_defaultvec, @function
+intc_defaultvec:
+        trap
         se_blr
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.

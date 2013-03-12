@@ -3,20 +3,47 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     ivor4_handler
-# -----------------------------------------------------------------------------
-#   @public
-#   intc_init, using software vector mode - the boilerplate code (and it's
-#   size) is not a big enough reason for slightly less latency gained
-# -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     intc_init
-        .type       intc_init, @function
-intc_init:
-        e_or2i      r2, ivor4_handler@l
-        mtivor4     r2                      ;< register handler
-        ; lower pri in INTC_CPR to 0
-        se_blr
+
+# BASE: interrupt controller --------------------------------------------------
+INTC_BASE           .equ    $fff48000
+
+# MCR : module configuration register -----------------------------------------
+                                            ;
+;SSR                 .equ    %1<<31          ;< software system reset
+;SER                 .equ    %1<<30          ;< software external reset
+;CRE                 .equ    %1<<15          ;< checkstop reset enable
+
+INTC_MCR_OFFSET     .equ    $0000
+INTC_MCR            .equ    INTC_BASE+INTC_MCR_OFFSET
+
+# CPR: current priority register ----------------------------------------------
+                                            ;  pin assignment
+;PA_PRIM             .equ    %0001 << 10     ;< primary function
+;PA_ALT              .equ    %0010 << 10     ;< alternate function
+;PA_ALT2             .equ    %0100 << 10     ;< alternate function 2
+;PA_ALT3             .equ    %1000 << 10     ;< alternate function 3
+;PA_GPIO             .equ    %0000 << 10     ;< gpio
+
+INTC_CPR_OFFSET     .equ    $0008
+INTC_CPR            .equ    INTC_BASE+INTC_CPR_OFFSET
+
+; IACKR: interrupt acknowledge register ---------------------------------------
+                                            ;  pin data out
+;PDO_VOH             .equ    %1 << 0         ;< voh is driven onto external pin
+;PDO_VOL             .equ    %0 << 0         ;< vol is driven onto external pin
+;PDO_MASK            .equ    %1 << 0
+
+INTC_IACKR_OFFSET   .equ    $0010
+INTC_IACKR          .equ    INTC_BASE+INTC_IACKR_OFFSET
+
+; EOIR: end of interrupt register ---------------------------------------------
+
+INTC_EOIR_OFFSET    .equ    $0018
+INTC_EOIR           .equ    INTC_BASE+INTC_EOIR_OFFSET
+
+; SSCIR: software set/clear interrupt register --------------------------------
+; PSR: priority select register -----------------------------------------------
+
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
