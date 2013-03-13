@@ -27,7 +27,7 @@ main:   e_stwu      rsp, -8(rsp)
         se_bl       dec_init
         se_bl       tb_init
         se_bl       tb_start
-        wrteei      1                       ;< unmask everything
+        wrteei      1                       ;< unmask int's
         se_bl       lodurfw                 ;< fire up app
         se_lwz      r2, 4(rsp)
         se_mtlr     r2

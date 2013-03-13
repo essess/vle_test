@@ -6,8 +6,9 @@ SECTIONS
         _startof_ram = .;
         .init_vle (VLECODE) : { *(.init_vle) }
         .text_vle (VLECODE) : { *(.text_vle) }
-        .rodata   (CONST)   : { *(.rodata) }
-        .data     (DATA)    : { *(.data)   }
+        .rodata (CONST) : { *(.rodata) }
+        .data (DATA) : { *(.data) }
+        .vectbl ALIGN(2048) : { KEEP(*(.vectbl)) }
         _ecc_init_start = ALIGN(4);
         .bss (BSS) ALIGN(4) : { *(.bss) }
         _stack_end = ALIGN(8);

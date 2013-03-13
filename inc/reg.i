@@ -3,41 +3,41 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "intc.i"
-        .include    "intc.i"
+
+            .ifndef     _REG_I_
+_REG_I_     .equ        1
+
 # -----------------------------------------------------------------------------
-#   @public
-#   external interrupt handler:
-#   from INTC used in software mode. NOTE that the entire volatile register
-#   context is NOT saved here. I'm going to leave that up to you.
+#   creates a simple base equate in the form of: <scope>_BASE
+#   for ex:
+#       reg_base    INTC, $fff48000
+#   expands to:
+#       INTC_BASE   .equ    $fff48000
 # -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     ivor4_handler
-        .type       ivor4_handler, @function
-        .align      16
-ivor4_handler:
-        e_stwu      rsp, -24(rsp)
-        e_stmvsrrw  16(rsp)
-        se_stw      r2, 4(rsp)              ;< grab vec address to clear proc
-                                            ;  assertion and avoid re-enter
-        ; TODO                              ;  when ee unmasked
+reg_base:   .macro  scope, addr
+scope&&_BASE                .equ    addr
+.endm
 
-        wrteei      1
-        se_mflr     r2
-        se_stw      r2, 8(rsp)
-        se_stw      r3, 12(rsp)
+# -----------------------------------------------------------------------------
+#   creates a simple base equate in the form of:
+#       <scope>_<name>_OFFSET
+#       <scope>_<name>
+#   for ex:
+#       reg         INTC, MSR, $0000
+#   expands to:
+#       INTC_MCR_OFFSET     .equ    $0000
+#       INTC_MCR            .equ    INTC_BASE+INTC_MCR_OFFSET
+#
+#   which means that you need to define a base for this to be useful
+#
+# -----------------------------------------------------------------------------
+reg:        .macro  scope, name, offset
+scope&&_&&name&&_OFFSET     .equ    offset
+scope&&_&&name&&            .equ    scope&&_BASE + scope&&_&&name&&_OFFSET
+.endm
 
-        ; lookup in table -> bl
-        ; write INTC_EOIR, do 0 as recommended by RM
+            .endif
 
-        se_lwz      r3, 12(rsp)
-        se_lwz      r2, 8(rsp)
-        se_mtlr     r2
-        se_lwz      r2, 4(rsp)
-        wrteei      0
-        e_lmvsrrw   16(rsp)
-        se_lwz      rsp, 0(rsp)
-        se_rfi
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

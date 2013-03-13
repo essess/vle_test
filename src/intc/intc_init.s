@@ -3,19 +3,29 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
+        .include    "intc.i"
         .extern     ivor4_handler
+        .extern     _f_vectbl                   ;< linker defined
 # -----------------------------------------------------------------------------
 #   @public
 #   intc_init, using software vector mode - the boilerplate code (and it's
-#   size) is not a big enough reason for slightly less latency gained
+#   size) for hardware vector mode is not a big enough reason for slightly
+#   less latency gained
 # -----------------------------------------------------------------------------
         .section    .text_vle
         .public     intc_init
         .type       intc_init, @function
 intc_init:
-        e_or2i      r2, ivor4_handler@l
-        mtivor4     r2                      ;< register handler
-        ; lower pri in INTC_CPR to 0
+        e_or2i      r2, ivor4_handler@l         ;< register handler
+        mtivor4     r2                          ;
+        e_lis       r2, INTC_BASE@ha
+        se_li       r3, ( SVEN | VTES_4 )       ;< sw vector mode, word wide
+        e_stw       r3, INTC_MCR_OFFSET@l(r2)   ;  entries in table
+        e_lis       r3, _f_vectbl@h             ;< loadup table base into VTBA
+        e_or2i      r3, _f_vectbl@l             ;
+        e_stw       r3, INTC_IACKR_OFFSET@l(r2) ;
+        se_li       r3, PRI_0                   ;< lower threshold to lowest
+        e_stw       r3, INTC_CPR_OFFSET@l(r2)   ;  priority (unmask everything)
         se_blr
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
