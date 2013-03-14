@@ -8,23 +8,26 @@
         .include    "fmpll.i"
 
         .extern     main
-        .extern     _ecc_init_wordsize      ;< linker defined, see .lcf
-        .extern     _ecc_init_end           ;   |
-        .extern     _f_bss                  ;   |
-        .extern     _f_data                 ;   |
-        .extern     _f_rodata               ; --+
+        .extern     _ecc_init_wordsize      #< linker defined, see .lcf
+        .extern     _ecc_init_end           #   |
+        .extern     _f_bss                  #   |
+        .extern     _f_data                 #   |
+        .extern     _f_rodata               # --+
 
 INTDIS_ANDMASK      .equ        ~( %1<<17 | %1<<15 | %1<<12 |%1<<9 )
 
-EPREDIV             .equ        ( 1-1 << EPREDIV_LSHIFT)  ;< 8MHz/1 * 40 =
-EMFD                .equ        ( 40 << EMFD_LSHIFT )     ;< vco = 320 MHz
+EPREDIV             .equ        ( 1-1 << EPREDIV_LSHIFT)  #< 8MHz/1 * 40 =
+EMFD                .equ        ( 40 << EMFD_LSHIFT )     #< vco = 320 MHz
 ESYNCR1_VAL         .equ        ( EMODE | CLKCFG_NXR | EPREDIV | EMFD )
 
 ESYNCR2_VAL         .equ        ( LOCDIS | LOLRDIS | LOCRDIS | LOLIRQDIS | \
-                                  LOCIRQDIS |ERFD_DIV4 )  ; vco/4 = 80 MHz clk
+                                  LOCIRQDIS |ERFD_DIV4 )  # vco/4 = 80 MHz clk
 
-FMPLL_TO            .equ        160*2                     ; ~160 loops typ.
+FMPLL_TO            .equ        160*2                     # ~160 loops typ.
 
+# -----------------------------------------------------------------------------
+#        .section    .debug
+#        .file       "start.s"
 # -----------------------------------------------------------------------------
 #   @public
 #   VLE entry point for the device side firmware of the lodur app:
@@ -32,65 +35,65 @@ FMPLL_TO            .equ        160*2                     ; ~160 loops typ.
 # -----------------------------------------------------------------------------
         .section    .init_vle, text_vle
         .public     start
-        .type       start, @function
 start:  e_lis       r1, (MAP0_ENAB|MAP1_ENAB|MAP2_ENAB)@h
         e_lis       r2, SWT_BASE@ha
-        e_stw       r1, SWT_CR@l(r2)        ;< disable swt
-        se_li       r1, 0                   ;< kill booke wdt as best we can,
-        mttcr       r1                      ;  see note 0
-        mfhid0      r1                      ;< r-m-w, branch prediction enb
-        se_bclri    r1, 6                   ;  for both directions
+        e_stw       r1, SWT_CR_OFFSET@l(r2) #< disable swt
+        se_li       r1, 0                   #< kill booke wdt as best we can,
+        mttcr       r1                      #  see note 0
+        mfhid0      r1                      #< r-m-w, branch prediction enb
+        se_bclri    r1, 6                   #  for both directions
         se_bclri    r1, 7
         mthid0      r1
-        e_li        r1, ( %1<<0 | %1<<9 )   ;< enb and flush btb
-        mtspr       1013, r1                ;< see note 1
-        mfmsr       r1                      ;< r-m-w, turn on SPE apu
-        se_bseti    r1, 6                   ;< see note 2
+        e_li        r1, ( %1<<0 | %1<<9 )   #< enb and flush btb
+        mtspr       1013, r1                #< see note 1
+        mfmsr       r1                      #< r-m-w, turn on SPE apu
+        se_bseti    r1, 6                   #< see note 2
         mtmsr       r1
-        e_lis       r2, FMPLL_BASE@ha       ;< loadup fmpll defaults
+        e_lis       r2, FMPLL_BASE@ha       #< loadup fmpll defaults
         e_lis       r1, ESYNCR1_VAL@h
         e_or2i      r1, ESYNCR1_VAL@l
         se_stw      r1, FMPLL_ESYNCR1@l(r2)
         e_lis       r1, ESYNCR2_VAL@h
         e_or2i      r1, ESYNCR2_VAL@l
         se_stw      r1, FMPLL_ESYNCR2@l(r2)
-        e_li        r1, FMPLL_TO            ;< wait for lock or timeout
+        e_li        r1, FMPLL_TO            #< wait for lock or timeout
         se_mtctr    r1
 @wait:  se_lwz      r1, FMPLL_SYNSR@l(r2)
-        se_btsti    r1, 28                  ;< SYNSR[LOCK]
-        se_bne      @ecc                    ;< locked, move on
+        se_btsti    r1, 28                  #< SYNSR[LOCK]
+        se_bne      @ecc                    #< locked, move on
         e_bdnz      @wait
-        trap                                ;< lock fail, trap to dbg if present
+        trap                                #< lock fail, trap to dbg if present
 @ecc:   e_lis       r1, _ecc_init_wordsize@h
         e_or2i      r1, _ecc_init_wordsize@l
-        se_mtctr    r1                      ;< loadup WORD size count
-        e_lis       r2, _ecc_init_end@h     ;< loadup starting address
-        e_or2i      r2, _ecc_init_end@l     ;
-        se_mr       rsp, r2                 ;< do a convienient load of tos
-        se_li       r3, 0                   ;< wipe as 0 to clear .bss as
-@next:  e_stwu      r3, -4(r2)              ;  nifty side effect
+        se_mtctr    r1                      #< loadup WORD size count
+        e_lis       r2, _ecc_init_end@h     #< loadup starting address
+        e_or2i      r2, _ecc_init_end@l     #
+        se_mr       rsp, r2                 #< do a convienient load of tos
+        se_li       r3, 0                   #< wipe as 0 to clear .bss as
+@next:  e_stwu      r3, -4(r2)              #  nifty side effect
         e_bdnz      @next
-        e_lis       r24, _f_bss@ha          ;< loadup section bases, use @ha
-        e_lis       r25, _f_data@ha         ;  because reg offsets are sign
-        e_lis       r26, _f_rodata@ha       ;  extended
+        e_lis       r24, _f_bss@ha          #< loadup section bases, use @ha
+        e_lis       r25, _f_data@ha         #  because reg offsets are sign
+        e_lis       r26, _f_rodata@ha       #  extended
         se_bl       main
-        mfmsr       r1                      ;< mask ALL int sources:
-        e_lis       r2, INTDIS_ANDMASK@h    ;  CE, EE, ME, DE
+        mfmsr       r1                      #< mask ALL int sources:
+        e_lis       r2, INTDIS_ANDMASK@h    #  CE, EE, ME, DE
         e_or2i      r2, INTDIS_ANDMASK@l
         se_and      r1, r2
         mtmsr       r1
         e_lis       r1, SSR@h
         e_lis       r2, SIU_SRCR@ha
-        se_stw      r1, SIU_SRCR@l(r2)      ;< bye
+        se_stw      r1, SIU_SRCR@l(r2)      #< bye
         wait
         se_blr
+.function   "start", start, .-start
 # -----------------------------------------------------------------------------
 # note 0: TCR[WRC] can only be cleared by a reset. The BAM has turned it on for
 #         us, so the best we can do at this point is to simply put the trip
 #         point so far out in time that it won't trigger itself.
 # -----------------------------------------------------------------------------
 # note 1: turns out that mwerks generates the wrong code for the mtbucsr
-#         instruction; mtspr 1008, Rn. It should be spr 1013 so it's done
+#         instruction# mtspr 1008, Rn. It should be spr 1013 so it's done
 #         manually here. Also note that HID0 is 1008, and that was implied
 #         immediately before in the last mtxxx instruction. I think that the
 #         assembler has no idea what the bucsr register is and silently uses

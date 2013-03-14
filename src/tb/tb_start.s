@@ -8,12 +8,12 @@
 # -----------------------------------------------------------------------------
         .section    .text_vle
         .public     tb_start
-        .type       tb_start, @function
 tb_start:
         mfhid0      r2
-        se_bseti    r2, 17                  ;< HID0[TBEN]
-        mthid0      r2                      ;  start tb AND dec/fit
+        se_bseti    r2, 17                  #< HID0[TBEN]
+        mthid0      r2                      #  start tb AND dec/fit
         se_blr
+.function   "tb_start", tb_start, .-tb_start
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

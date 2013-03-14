@@ -3,54 +3,51 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-
             .include    "reg.i"
-
             .ifndef     _INTC_I_
 _INTC_I_    .equ        1
+# -----------------------------------------------------------------------------
+reg_base    INTC, $fff48000         #< interrupt controller
+# -----------------------------------------------------------------------------
+                                    #  hardware vector enable
+HVEN        .equ    %1<<0           #< hardware vector mode
+SVEN        .equ    %0<<0           #< software vector mode
+                                    #  vector table entry size
+VTES_8      .equ    %1<<5           #< 8 bytes per entry
+VTES_4      .equ    %0<<5           #< 4 bytes per entry
 
+reg         INTC, MCR, $0000        #< module configuration register
 # -----------------------------------------------------------------------------
-reg_base    INTC, $fff48000         ;< interrupt controller
-# -----------------------------------------------------------------------------
-                                    ;  hardware vector enable
-HVEN        .equ    %1<<0           ;< hardware vector mode
-SVEN        .equ    %0<<0           ;< software vector mode
-                                    ;  vector table entry size
-VTES_8      .equ    %1<<5           ;< 8 bytes per entry
-VTES_4      .equ    %0<<5           ;< 4 bytes per entry
+                                    #  priority
+PRI_15      .equ    15<<0           #< highest
+PRI_14      .equ    14<<0           #
+PRI_13      .equ    13<<0           #
+PRI_12      .equ    12<<0           #
+PRI_11      .equ    11<<0           #
+PRI_10      .equ    10<<0           #
+PRI_9       .equ    9<<0            #
+PRI_8       .equ    8<<0            #
+PRI_7       .equ    7<<0            #
+PRI_6       .equ    6<<0            #
+PRI_5       .equ    5<<0            #
+PRI_4       .equ    4<<0            #
+PRI_3       .equ    3<<0            #
+PRI_2       .equ    2<<0            #
+PRI_1       .equ    1<<0            #
+PRI_0       .equ    0<<0            #< lowest
 
-reg         INTC, MCR, $0000        ;< module configuration register
+reg         INTC, CPR, $0008        #< current priority register
 # -----------------------------------------------------------------------------
-                                    ;  priority
-PRI_15      .equ    15<<0           ;< highest
-PRI_14      .equ    14<<0           ;
-PRI_13      .equ    13<<0           ;
-PRI_12      .equ    12<<0           ;
-PRI_11      .equ    11<<0           ;
-PRI_10      .equ    10<<0           ;
-PRI_9       .equ    9<<0            ;
-PRI_8       .equ    8<<0            ;
-PRI_7       .equ    7<<0            ;
-PRI_6       .equ    6<<0            ;
-PRI_5       .equ    5<<0            ;
-PRI_4       .equ    4<<0            ;
-PRI_3       .equ    3<<0            ;
-PRI_2       .equ    2<<0            ;
-PRI_1       .equ    1<<0            ;
-PRI_0       .equ    0<<0            ;< lowest
+reg         INTC, IACKR, $0010      #< interrupt acknowledge register
+# -----------------------------------------------------------------------------
+reg         INTC, EOIR, $0018       #< end of interrupt register
+# -----------------------------------------------------------------------------
+                                    #
+SET         .equ    %1<<1           #< set flag
+CLR         .equ    %1<<0           #< clr flag
+IS_SET      .equ    CLR             #< rd of clr flag determines assert status
 
-reg         INTC, CPR, $0008        ;< current priority register
-# -----------------------------------------------------------------------------
-reg         INTC, IACKR, $0010      ;< interrupt acknowledge register
-# -----------------------------------------------------------------------------
-reg         INTC, EOIR, $0018       ;< end of interrupt register
-# -----------------------------------------------------------------------------
-                                    ;
-SET         .equ    %1<<1           ;< set flag
-CLR         .equ    %1<<0           ;< clr flag
-IS_SET      .equ    CLR             ;< rd of clr flag determines assert status
-
-reg         INTC, SSCIR0_3, $0020  ;< software set/clear interrupt register
+reg         INTC, SSCIR0_3, $0020  #< software set/clear interrupt register
 reg         INTC, SSCIR0,   $0020
 reg         INTC, SSCIR1,   $0022
 reg         INTC, SSCIR2,   $0022
@@ -62,7 +59,7 @@ reg         INTC, SSCIR5,   $0025
 reg         INTC, SSCIR6,   $0026
 reg         INTC, SSCIR7,   $0027
 # -----------------------------------------------------------------------------
-reg         INTC, PSR0_3,   $0040   ;< priority select register
+reg         INTC, PSR0_3,   $0040   #< priority select register
 reg         INTC, PSR0,     $0040
 reg         INTC, PSR1,     $0041
 reg         INTC, PSR2,     $0042
