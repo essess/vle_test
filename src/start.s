@@ -62,7 +62,7 @@ start:  e_lis       r1, (MAP0_ENAB|MAP1_ENAB|MAP2_ENAB)@h
         se_btsti    r1, 28                  #< SYNSR[LOCK]
         se_bne      @ecc                    #< locked, move on
         e_bdnz      @wait
-        trap                                #< lock fail, trap to dbg if present
+        se_nop                              #< lock fail
 @ecc:   e_lis       r1, _ecc_init_wordsize@h
         e_or2i      r1, _ecc_init_wordsize@l
         se_mtctr    r1                      #< loadup WORD size count
