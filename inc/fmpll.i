@@ -7,11 +7,11 @@
             .ifndef     _FMPLL_I_
 _FMPLL_I_   .equ        1
 # -----------------------------------------------------------------------------
-reg_base    FMPLL, $c3f80000        #< software watchdog timer
+reg_base    FMPLL, $c3f80000        #< fm pll
 # -----------------------------------------------------------------------------
 reg         FMPLL, SYNCR, $0000     #< synthesizer control register
 # -----------------------------------------------------------------------------
-reg         FMPLL, SYNSR, $004      #< synthesizer status register
+reg         FMPLL, SYNSR, $0004     #< synthesizer status register
 # -----------------------------------------------------------------------------
                                         #  enhanced mode enable
 EMODE           .equ    %1 << 31        #< enhanced mode
