@@ -16,7 +16,7 @@
 
 INTDIS_ANDMASK      .equ        ~( %1<<17 | %1<<15 | %1<<12 |%1<<9 )
 
-EPREDIV             .equ        ( 1-1 << EPREDIV_LSHIFT)  #< 8MHz/1 * 40 =
+EPREDIV             .equ        ( 0 << EPREDIV_LSHIFT)    #< 8MHz/1 * 40 =
 EMFD                .equ        ( 40 << EMFD_LSHIFT )     #< vco = 320 MHz
 ESYNCR1_VAL         .equ        ( EMODE | CLKCFG_NXR | EPREDIV | EMFD )
 
@@ -37,7 +37,7 @@ FMPLL_TO            .equ        160*2                     # ~160 loops typ.
         .public     start
 start:  e_lis       r1, (MAP0_ENAB|MAP1_ENAB|MAP2_ENAB)@h
         e_lis       r2, SWT_BASE@ha
-        e_stw       r1, SWT_CR_OFFSET@l(r2) #< disable swt
+        e_stw       r1, SWT_CR@l(r2)        #< disable swt
         se_li       r1, 0                   #< kill booke wdt as best we can,
         mttcr       r1                      #  see note 0
         mfhid0      r1                      #< r-m-w, branch prediction enb
