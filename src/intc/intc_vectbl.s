@@ -6,7 +6,9 @@
         .include    "intc.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   vector address table for all external interrupts
+#   Vector address table for all external interrupts. See the RM
+#   for which is which. The reserved values are marked here though.
+#   Load vectors at runtime with intc_reg_handler
 # -----------------------------------------------------------------------------
         .section    .vectbl, data
         .public     intc_vectbl
@@ -152,17 +154,17 @@ intc_vectbl:
         vector      138  #< 
         vector      139  #< 
         vector      140  #< 
-        vector      141  #< 
-        vector      142  #< 
-        vector      143  #< 
-        vector      144  #< 
-        vector      145  #< 
+        vector      141  #< reserved
+        vector      142  #< reserved
+        vector      143  #< reserved
+        vector      144  #< reserved
+        vector      145  #< reserved
         vector      146  #< 
-        vector      147  #< 
-        vector      148  #< 
+        vector      147  #< reserved
+        vector      148  #< reserved
         vector      149  #< 
-        vector      150  #< 
-        vector      151  #< 
+        vector      150  #< reserved
+        vector      151  #< reserved
         vector      152  #< 
         vector      153  #< 
         vector      154  #< 
@@ -204,114 +206,114 @@ intc_vectbl:
         vector      190  #< 
         vector      191  #< 
         vector      192  #< 
-        vector      193  #< 
-        vector      194  #< 
-        vector      195  #< 
-        vector      196  #< 
+        vector      193  #< reserved
+        vector      194  #< reserved
+        vector      195  #< reserved
+        vector      196  #< reserved
         vector      197  #< 
         vector      198  #< 
         vector      199  #< 
         vector      200  #< 
         vector      201  #< 
-        vector      202  #< 
-        vector      203  #< 
-        vector      204  #< 
-        vector      205  #< 
-        vector      206  #< 
-        vector      207  #< 
-        vector      208  #< 
+        vector      202  #< reserved
+        vector      203  #< reserved
+        vector      204  #< reserved
+        vector      205  #< reserved
+        vector      206  #< reserved
+        vector      207  #< reserved
+        vector      208  #< reserved
         vector      209  #< 
-        vector      210  #< 
-        vector      211  #< 
-        vector      212  #< 
-        vector      213  #< 
-        vector      214  #< 
-        vector      215  #< 
-        vector      216  #< 
-        vector      217  #< 
-        vector      218  #< 
-        vector      219  #< 
-        vector      220  #< 
-        vector      221  #< 
-        vector      222  #< 
-        vector      223  #< 
-        vector      224  #< 
-        vector      225  #< 
-        vector      226  #< 
-        vector      227  #< 
-        vector      228  #< 
-        vector      229  #< 
-        vector      230  #< 
-        vector      231  #< 
-        vector      232  #< 
-        vector      233  #< 
-        vector      234  #< 
-        vector      235  #< 
-        vector      236  #< 
-        vector      237  #< 
-        vector      238  #< 
-        vector      239  #< 
-        vector      240  #< 
-        vector      241  #< 
-        vector      242  #< 
-        vector      243  #< 
-        vector      244  #< 
-        vector      245  #< 
-        vector      246  #< 
-        vector      247  #< 
-        vector      248  #< 
-        vector      249  #< 
-        vector      250  #< 
-        vector      251  #< 
-        vector      252  #< 
-        vector      253  #< 
-        vector      254  #< 
-        vector      255  #< 
-        vector      256  #< 
-        vector      257  #< 
-        vector      258  #< 
-        vector      259  #< 
-        vector      260  #< 
-        vector      261  #< 
-        vector      262  #< 
-        vector      263  #< 
-        vector      264  #< 
-        vector      265  #< 
-        vector      266  #< 
-        vector      267  #< 
-        vector      268  #< 
-        vector      269  #< 
-        vector      270  #< 
-        vector      271  #< 
-        vector      272  #< 
-        vector      273  #< 
-        vector      274  #< 
-        vector      275  #< 
-        vector      276  #< 
-        vector      277  #< 
-        vector      278  #< 
-        vector      279  #< 
-        vector      280  #< 
-        vector      281  #< 
-        vector      282  #< 
-        vector      283  #< 
-        vector      284  #< 
-        vector      285  #< 
-        vector      286  #< 
-        vector      287  #< 
-        vector      288  #< 
-        vector      289  #< 
-        vector      290  #< 
-        vector      291  #< 
-        vector      292  #< 
-        vector      293  #< 
-        vector      294  #< 
-        vector      295  #< 
-        vector      296  #< 
-        vector      297  #< 
-        vector      298  #< 
-        vector      299  #< 
-        vector      300  #< 
+        vector      210  #< reserved
+        vector      211  #< reserved
+        vector      212  #< reserved
+        vector      213  #< reserved
+        vector      214  #< reserved
+        vector      215  #< reserved
+        vector      216  #< reserved
+        vector      217  #< reserved
+        vector      218  #< reserved
+        vector      219  #< reserved
+        vector      220  #< reserved
+        vector      221  #< reserved
+        vector      222  #< reserved
+        vector      223  #< reserved
+        vector      224  #< reserved
+        vector      225  #< reserved
+        vector      226  #< reserved
+        vector      227  #< reserved
+        vector      228  #< reserved
+        vector      229  #< reserved
+        vector      230  #< reserved
+        vector      231  #< reserved
+        vector      232  #< reserved
+        vector      233  #< reserved
+        vector      234  #< reserved
+        vector      235  #< reserved
+        vector      236  #< reserved
+        vector      237  #< reserved
+        vector      238  #< reserved
+        vector      239  #< reserved
+        vector      240  #< reserved
+        vector      241  #< reserved
+        vector      242  #< reserved
+        vector      243  #< reserved
+        vector      244  #< reserved
+        vector      245  #< reserved
+        vector      246  #< reserved
+        vector      247  #< reserved
+        vector      248  #< reserved
+        vector      249  #< reserved
+        vector      250  #< reserved
+        vector      251  #< reserved
+        vector      252  #< reserved
+        vector      253  #< reserved
+        vector      254  #< reserved
+        vector      255  #< reserved
+        vector      256  #< reserved
+        vector      257  #< reserved
+        vector      258  #< reserved
+        vector      259  #< reserved
+        vector      260  #< reserved
+        vector      261  #< reserved
+        vector      262  #< reserved
+        vector      263  #< reserved
+        vector      264  #< reserved
+        vector      265  #< reserved
+        vector      266  #< reserved
+        vector      267  #< reserved
+        vector      268  #< reserved
+        vector      269  #< reserved
+        vector      270  #< reserved
+        vector      271  #< reserved
+        vector      272  #< reserved
+        vector      273  #< reserved
+        vector      274  #< reserved
+        vector      275  #< reserved
+        vector      276  #< reserved
+        vector      277  #< reserved
+        vector      278  #< reserved
+        vector      279  #< reserved
+        vector      280  #< reserved
+        vector      281  #< reserved
+        vector      282  #< reserved
+        vector      283  #< reserved
+        vector      284  #< reserved
+        vector      285  #< reserved
+        vector      286  #< reserved
+        vector      287  #< reserved
+        vector      288  #< reserved
+        vector      289  #< reserved
+        vector      290  #< reserved
+        vector      291  #< reserved
+        vector      292  #< reserved
+        vector      293  #< reserved
+        vector      294  #< reserved
+        vector      295  #< reserved
+        vector      296  #< reserved
+        vector      297  #< reserved
+        vector      298  #< reserved
+        vector      299  #< reserved
+        vector      300  #< reserved
         vector      301  #< 
         vector      302  #< 
         vector      303  #< 
@@ -319,7 +321,7 @@ intc_vectbl:
         vector      305  #< 
         vector      306  #< 
         vector      307  #< 
-        vector      308  #< 
+        vector      308  #< reserved
         vector      309  #< 
         vector      310  #< 
         vector      311  #< 
@@ -368,12 +370,13 @@ intc_vectbl:
         vector      354  #< 
         vector      355  #< 
         vector      356  #< 
-        vector      357  #< 
+        vector      357  #< reserved
         vector      358  #< 
         vector      359  #< 
         vector      360  #< 
-        vector      361  #< 
-        vector      362  #<
+        vector      361  #< reserved
+        vector      362  #< reserved
+        vector      363  #< reserved
 
 # -----------------------------------------------------------------------------
 #   @public
