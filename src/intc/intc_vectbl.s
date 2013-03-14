@@ -386,7 +386,7 @@ intc_vectbl:
         .public     vec_default
         .weak       vec_default
 vec_default:
-        trap
+        se_nop
         se_blr
 .function   "vec_default", vec_default, .-vec_default
 # -----------------------------------------------------------------------------
