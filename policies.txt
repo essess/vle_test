@@ -44,6 +44,13 @@ better size optimization
 your frame will always be -(4+) bytes in size because you're always storing the
 previous rsp as part of the update operation
 
+NOTICE: the stack ptr update is ATOMIC and done first thing - use of interrupts make
+this manditory. Typically, you'll see older ppc code write to 'unclaimed' stack space
+before updating the rsp. Not sure why it's done this way, but it's plain old wrong (and
+I'm probably missing the context as to why someone would actually do that). I have
+never seen it done that way in embedded ppc code at all. We're going to do it the known
+safe way.
+
 -------
 
 on system call: try:
