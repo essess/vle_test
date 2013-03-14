@@ -3,32 +3,31 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .public     msec
-# -----------------------------------------------------------------------------
 #   @public
 #   decrementer interrupt handler:
 #   this interrupts is so short, I don't bother unmasking. if you do more here
 #   consider this as a point of optimization to keep int latency low.
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     ivor10_handler
-        .type       ivor10_handler, @function
         .align      16
+        .public     ivor10_handler
 ivor10_handler:
-        e_stwu      rsp, -8(rsp)            ;< create frame
-        se_stw      r2, 4(rsp)              ;< push r2
+        e_stwu      rsp, -8(rsp)            #< create frame
+        se_stw      r2, 4(rsp)              #< push r2
         se_bgeni    r2, 4                   
-        mttsr       r2                      ;< clr TSR[DIE]
+        mttsr       r2                      #< clr TSR[DIE]
         e_lwz       r2, msec@l(r24)
-        se_addi     r2, 1                   ;< msec++
+        se_addi     r2, 1                   #< msec++
         e_stw       r2, msec@l(r24)
-        se_lwz      r2, 4(rsp)              ;< pop r2
-        se_lwz      rsp, 0(rsp)             ;< clear frame
+        se_lwz      r2, 4(rsp)              #< pop r2
+        se_lwz      rsp, 0(rsp)             #< clear frame
         se_rfi
+.function   "ivor10_handler", ivor10_handler, .-ivor10_handler
 # -----------------------------------------------------------------------------
         .section    .bss
         .align      4
-msec:   .long       0                       ; system time -> READ-ONLY
+        .public     msec
+msec:   .long       0                       # system time -> READ-ONLY
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

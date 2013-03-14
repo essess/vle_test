@@ -8,10 +8,10 @@
 # -----------------------------------------------------------------------------
         .section    .text_vle
         .public     lodurfw
-        .type       lodurfw, @function
 lodurfw:
         wait
         se_b        lodurfw
+.function   "lodurfw", lodurfw, .-lodurfw
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

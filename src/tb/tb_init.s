@@ -8,12 +8,12 @@
 # -----------------------------------------------------------------------------
         .section    .text_vle
         .public     tb_init
-        .type       tb_init, @function
 tb_init:
         se_li       r2, 0
-        mttbu       r2                      ;< wipe timebase
+        mttbu       r2                      #< wipe timebase
         mttbl       r2
         se_blr
+.function   "tb_init", tb_init, .-tb_init
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

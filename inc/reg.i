@@ -3,10 +3,8 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-
             .ifndef     _REG_I_
 _REG_I_     .equ        1
-
 # -----------------------------------------------------------------------------
 #   creates a simple base equate in the form of: <scope>_BASE
 #   for ex:
