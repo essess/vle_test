@@ -3,14 +3,20 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
+        .include    "intc.i"
+# -----------------------------------------------------------------------------
 #   @public
 #   lodurfw: app
 # -----------------------------------------------------------------------------
         .section    .text_vle
         .public     lodurfw
 lodurfw:
-        wait
-        se_b        lodurfw
+        e_lis       r2, INTC_BASE@ha
+        se_li       r3, 1                   # set sw pri 1
+        e_stb       r3, INTC_PSR0@l(r2)
+@loop:  se_li       r3, SET     # set irq
+        e_stb       r3, INTC_SSCIR0@l(r2)
+        se_b        @loop
 .function   "lodurfw", lodurfw, .-lodurfw
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
