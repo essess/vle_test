@@ -19,12 +19,12 @@ intc_init:
         mtivor4     r2                          #
         e_lis       r2, INTC_BASE@ha
         se_li       r3, ( SVEN | VTES_4 )       #< sw vector mode, word wide
-        e_stw       r3, INTC_MCR_OFFSET@l(r2)   #  entries in table
+        e_stw       r3, INTC_MCR@l(r2)          #  entries in table
         e_lis       r3, _f_vectbl@h             #< loadup table base into VTBA
         e_or2i      r3, _f_vectbl@l             #
-        e_stw       r3, INTC_IACKR_OFFSET@l(r2) #
+        e_stw       r3, INTC_IACKR@l(r2)        #
         se_li       r3, PRI_0                   #< lower threshold to lowest
-        e_stw       r3, INTC_CPR_OFFSET@l(r2)   #  priority (unmask everything)
+        e_stw       r3, INTC_CPR@l(r2)          #  priority (unmask everything)
         se_blr
 .function   "intc_init", intc_init, .-intc_init
 # -----------------------------------------------------------------------------
