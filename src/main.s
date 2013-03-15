@@ -22,10 +22,10 @@ main:   e_stwu      rsp, -8(rsp)
         se_stw      r2, 4(rsp)
         e_lis       r2, _startof_ram@h      #< setup int base
         mtivpr      r2                      #
-        se_bl       intc_init
-        se_bl       dec_init
-        se_bl       tb_init
-        se_bl       tb_start
+        e_bl        intc_init
+        e_bl        dec_init
+        e_bl        tb_init
+        e_bl        tb_start
         wrteei      1                       #< unmask int's
         se_bl       lodurfw                 #< fire up app
         se_lwz      r2, 4(rsp)

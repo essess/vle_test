@@ -3,50 +3,35 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "intc.i"
-        .include    "led.i"
-        .extern     intc_reg_handler
-# -----------------------------------------------------------------------------
-#   @public
-#   lodurfw: app
-# -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     lodurfw
-lodurfw:
-        e_bl        led_init
-        se_li       r3, 0                   #< sw0 vector
-        e_lis       r2, clrflg0@h           #< handler
-        e_or2i      r2, clrflg0@l
-        e_bl        intc_reg_handler        #< reg it
-        se_li       r3, 1
-        e_lis       r2, INTC_BASE@ha
-        e_stb       r3, INTC_PSR0@l(r2)     #< set sw0 pri = 1
-@loop:  se_li       r3, SET
-        e_stb       r3, INTC_SSCIR0@l(r2)   #< assert irq synchronously
-        se_b        @loop
-.function   "lodurfw", lodurfw, .-lodurfw
-# -----------------------------------------------------------------------------
-#   @internal
-#   clr sw int 0 flag
-# -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     clrflg0
-clrflg0:
-        e_stwu      rsp, -12(rsp)
-        se_stw      r4, 4(rsp)              #< push r4
-        se_mflr     r4
-        se_stw      r4, 8(rsp)              #< push lr
-        e_lis       r2, INTC_BASE@ha        #< only use r2/r3 here, they're the
-        se_li       r3, CLR                 #  safe clobber regs from ivor4
-        e_stb       r3, INTC_SSCIR0@l(r2)
-        se_li       r2, LED1
-        e_bl        led_invert              #< TODO: save clobbered registers in frame!
-        se_lwz      r4, 8(rsp)              #< pop lr
-        se_mtlr     r4
-        se_lwz      r4, 4(rsp)              #< pop r4
-        se_lwz      rsp, 0(rsp)
-        se_blr
-.function   "clrflg0", clrflg0, .-clrflg0
+            .ifndef     _LED_I_
+_LED_I_     .equ        1
+
+            .include    "siu.i"
+
+LED0        .equ        0
+LED0_PCR    .equ        SIU_PCR188
+LED0_GPDO   .equ        SIU_GPDO188
+
+LED1        .equ        1
+LED1_PCR    .equ        SIU_PCR189
+LED1_GPDO   .equ        SIU_GPDO189
+
+LED2        .equ        2
+LED2_PCR    .equ        SIU_PCR190
+LED2_GPDO   .equ        SIU_GPDO190
+
+LED3        .equ        3
+LED3_PCR    .equ        SIU_PCR191
+LED3_GPDO   .equ        SIU_GPDO191
+
+LED_OFF     .equ        PDO_VOH
+LED_ON      .equ        PDO_VOL
+
+            .public     led_init
+            .public     led_invert
+
+            .endif
+
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
