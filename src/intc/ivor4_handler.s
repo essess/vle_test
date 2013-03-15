@@ -27,7 +27,7 @@ ivor4_handler:
         se_mtlr     r3
         se_blrl                             #< go
         se_li       r3, 0                   #< RM reccomends wr 0 to EIOR
-        e_lis       r2, INTC_BASE@ha
+        e_lis       r2, INTC_BASE@ha        #< can't guarantee r2 was preserved
         e_stw       r3, INTC_EOIR@l(r2)
         se_lwz      r3, 12(rsp)
         se_lwz      r2, 8(rsp)
