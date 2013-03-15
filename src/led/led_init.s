@@ -3,50 +3,36 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "intc.i"
         .include    "led.i"
-        .extern     intc_reg_handler
+
+LEDINIT_PCR .equ        ( PA_GPIO | OBE_ENAB | DSC_50PF | ODE_ENAB | \
+                          SRC_MAX | WPE_DIS )
+
 # -----------------------------------------------------------------------------
 #   @public
-#   lodurfw: app
+#   initialize all leds to OFF
+#   args:
+#       none
+#   retval:
+#       none
+#   clobbers:
+#       r2, r3
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     lodurfw
-lodurfw:
-        e_bl        led_init
-        se_li       r3, 0                   #< sw0 vector
-        e_lis       r2, clrflg0@h           #< handler
-        e_or2i      r2, clrflg0@l
-        e_bl        intc_reg_handler        #< reg it
-        se_li       r3, 1
-        e_lis       r2, INTC_BASE@ha
-        e_stb       r3, INTC_PSR0@l(r2)     #< set sw0 pri = 1
-@loop:  se_li       r3, SET
-        e_stb       r3, INTC_SSCIR0@l(r2)   #< assert irq synchronously
-        se_b        @loop
-.function   "lodurfw", lodurfw, .-lodurfw
-# -----------------------------------------------------------------------------
-#   @internal
-#   clr sw int 0 flag
-# -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     clrflg0
-clrflg0:
-        e_stwu      rsp, -12(rsp)
-        se_stw      r4, 4(rsp)              #< push r4
-        se_mflr     r4
-        se_stw      r4, 8(rsp)              #< push lr
-        e_lis       r2, INTC_BASE@ha        #< only use r2/r3 here, they're the
-        se_li       r3, CLR                 #  safe clobber regs from ivor4
-        e_stb       r3, INTC_SSCIR0@l(r2)
-        se_li       r2, LED1
-        e_bl        led_invert              #< TODO: save clobbered registers in frame!
-        se_lwz      r4, 8(rsp)              #< pop lr
-        se_mtlr     r4
-        se_lwz      r4, 4(rsp)              #< pop r4
-        se_lwz      rsp, 0(rsp)
+led_init:
+        se_li       r3, LED_OFF             #< set state to avoid glitch on
+        e_lis       r2, SIU_BASE@ha         #  dir change
+        e_stb       r3, LED0_GPDO@l(r2)
+        e_stb       r3, LED1_GPDO@l(r2)
+        e_stb       r3, LED2_GPDO@l(r2)
+        e_stb       r3, LED3_GPDO@l(r2)
+        e_li        r3, LEDINIT_PCR@l       #< set as output
+        e_sth       r3, LED0_PCR@l(r2)
+        e_sth       r3, LED1_PCR@l(r2)
+        e_sth       r3, LED2_PCR@l(r2)
+        e_sth       r3, LED3_PCR@l(r2)
         se_blr
-.function   "clrflg0", clrflg0, .-clrflg0
+.function   "led_init", led_init, .-led_init
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
