@@ -3,38 +3,27 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "intc.i"
-        .extern     intc_reg_handler
+        .extern     intc_vectbl
 # -----------------------------------------------------------------------------
 #   @public
-#   lodurfw: app
+#   register a runtime interrupt handler
+#   args:
+#       r2: your function address
+#       r3: vector #
+#   retval:
+#       none
+#   clobbers:
+#       r3, r4
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     lodurfw
-lodurfw:
-        se_li       r3, 0                   #< sw0 vector
-        e_lis       r2, clrflg0@h           #< handler
-        e_or2i      r2, clrflg0@l
-        e_bl        intc_reg_handler        #< reg it
-        e_lis       r2, INTC_BASE@ha
-        se_li       r3, 1
-        e_stb       r3, INTC_PSR0@l(r2)     #< set sw0 pri = 1
-@loop:  se_li       r3, SET
-        e_stb       r3, INTC_SSCIR0@l(r2)   #< assert irq synchronously
-        se_b        @loop
-.function   "lodurfw", lodurfw, .-lodurfw
-# -----------------------------------------------------------------------------
-#   @internal
-#   clr sw int 0 flag
-# -----------------------------------------------------------------------------
-        .section    .text_vle
-        .public     clrflg0
-clrflg0:
-        e_lis       r2, INTC_BASE@ha        #< only use r2/r3 here, they're the
-        se_li       r3, CLR                 #  safe clobber regs
-        e_stb       r3, INTC_SSCIR0@l(r2)
+        .public     intc_reg_handler
+intc_reg_handler:
+        e_lis       r4, intc_vectbl@h
+        e_or2i      r4, intc_vectbl@l
+        se_slwi     r3, 2                   #< *4
+        stwx        r2, r3, r4
         se_blr
-.function   "clrflg0", clrflg0, .-clrflg0
+.function   "intc_reg_handler", intc_reg_handler, .-intc_reg_handler
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
