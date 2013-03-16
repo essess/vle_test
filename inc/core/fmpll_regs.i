@@ -3,9 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "reg.i"
-            .ifndef     _FMPLL_I_
-_FMPLL_I_   .equ        1
+               .include    "reg.i"
+               .ifndef     _FMPLL_REGS_I_
+_FMPLL_REGS_I_ .equ        1
 # -----------------------------------------------------------------------------
 reg_base    FMPLL, $c3f80000        #< fm pll
 # -----------------------------------------------------------------------------

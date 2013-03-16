@@ -3,9 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "reg.i"
-            .ifndef     _SIU_I_
-_SIU_I_     .equ        1
+             .include    "reg.i"
+             .ifndef     _SIU_REGS_I_
+_SIU_REGS_I_ .equ        1
 # -----------------------------------------------------------------------------
 reg_base    SIU, $c3f90000          #< system integration unit
 # -----------------------------------------------------------------------------

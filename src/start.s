@@ -3,9 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "core\swt.i"
-        .include    "core\siu.i"
-        .include    "core\fmpll.i"
+        .include    "core\swt_regs.i"
+        .include    "core\siu_regs.i"
+        .include    "core\fmpll_regs.i"
 
         .extern     main
         .extern     _ecc_init_wordsize      #< linker defined, see .lcf
