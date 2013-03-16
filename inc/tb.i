@@ -3,21 +3,15 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "tb.i"
+            .ifndef     _TB_I_
+_TB_I_      .equ        1
 # -----------------------------------------------------------------------------
-#   @public
-#   timebase start
-#   args: none
-#   retval: none
-#   clobbers: r2
+
+            .public     tb_init
+            .public     tb_start
+
 # -----------------------------------------------------------------------------
-        .section    .text_vle
-tb_start:
-        mfhid0      r2
-        se_bseti    r2, 17                  #< HID0[TBEN]
-        mthid0      r2                      #  start tb AND dec/fit
-        se_blr
-.function   "tb_start", tb_start, .-tb_start
+            .endif
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

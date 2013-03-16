@@ -3,7 +3,7 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "intc.i"
+        .include    "core\intc.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   Vector address table for all external interrupts. See the RM

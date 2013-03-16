@@ -4,6 +4,7 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "led.i"
+        .include    "led_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   invert led state
