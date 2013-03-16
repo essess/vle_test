@@ -4,6 +4,7 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "led.i"
+        .include    "dec_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   decrementer interrupt handler:
@@ -12,7 +13,6 @@
 # -----------------------------------------------------------------------------
         .section    .text_vle
         .align      16
-        .public     ivor10_handler
 ivor10_handler:
         e_stwu      rsp, -16(rsp)           #< create frame
         se_stw      r2, 12(rsp)             #< push r2
