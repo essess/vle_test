@@ -3,7 +3,8 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     ivor10_handler
+        .include    "dec.i"
+        .include    "dec_prv.i"
 SYSCLK  .equ        80000000
 HZ      .equ        1000
 DECAR   .equ        (SYSCLK/HZ)-1
@@ -14,7 +15,6 @@ DECAR   .equ        (SYSCLK/HZ)-1
 #       - set reload/roll rate
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     dec_init
 dec_init:
         e_or2i      r2, ivor10_handler@l
         mtivor10    r2                      #< register handler

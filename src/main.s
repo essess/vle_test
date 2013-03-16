@@ -3,11 +3,10 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
+        .include    "intc.i"
+        .include    "dec.i"
+        .include    "tb.i"
         .extern     _startof_ram            #< linker supplied sym
-        .extern     intc_init
-        .extern     dec_init
-        .extern     tb_init
-        .extern     tb_start
         .extern     lodurfw
 # -----------------------------------------------------------------------------
 #   @public
