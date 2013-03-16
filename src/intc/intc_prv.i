@@ -3,41 +3,27 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "intc_prv.i"
-        .include    "core\intc_regs.i"
+             .ifndef     _INTC_PRV_I_
+_INTC_PRV_I_ .equ        1
 # -----------------------------------------------------------------------------
-#   @public
-#   external interrupt handler:
-#   from INTC used in software mode. NOTE that the entire volatile register
-#   context is NOT saved here. I'm going to leave that up to you.
+
+        .public     ivor4_handler
+        .public     intc_vectbl
+        .public     _f_vectbl                   #< linker defined
+
 # -----------------------------------------------------------------------------
-        .section    .text_vle
-        .align      16
-ivor4_handler:
-        e_stwu      rsp, -24(rsp)
-        e_stmvsrrw  16(rsp)
-        se_stw      r2, 4(rsp)
-        se_mflr     r2                      #< we have to take the latency hit
-        se_stw      r2, 8(rsp)              #  of storing r2/r3 because we have
-        se_stw      r3, 12(rsp)             #  to pull IACKR before re-enb ints
-        e_lis       r2, INTC_BASE@ha        #< pull vector/ack it
-        e_lwz       r3, INTC_IACKR@l(r2)
-        wrteei      1                       #< unmask
-        se_lwz      r3, 0(r3)
-        se_mtlr     r3
-        se_blrl                             #< go
-        se_li       r3, 0                   #< RM reccomends wr 0 to EIOR
-        e_lis       r2, INTC_BASE@ha        #< can't guarantee r2 was preserved
-        e_stw       r3, INTC_EOIR@l(r2)
-        se_lwz      r3, 12(rsp)
-        se_lwz      r2, 8(rsp)
-        se_mtlr     r2
-        se_lwz      r2, 4(rsp)
-        wrteei      0
-        e_lmvsrrw   16(rsp)
-        se_lwz      rsp, 0(rsp)
-        se_rfi
-.function   "ivor4_handler", ivor4_handler, .-ivor4_handler
+
+vector: .macro      num
+        .section    .debug
+        .type       vec&&num&&_handler, @object
+        .previous
+        .public     vec&&num&&_handler
+vec&&num&&_handler:
+        .long       intc_vec_default
+.endm
+
+# -----------------------------------------------------------------------------
+            .endif
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

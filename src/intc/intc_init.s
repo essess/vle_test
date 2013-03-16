@@ -3,17 +3,19 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "core\intc.i"
-        .extern     ivor4_handler
-        .extern     _f_vectbl                   #< linker defined
+        .include    "intc.i"
+        .include    "intc_prv.i"
+        .include    "core\intc_regs.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   intc_init, using software vector mode - the boilerplate code (and it's
 #   size) for hardware vector mode is not a big enough reason for slightly
 #   less latency gained
+#   args: none
+#   retval: none
+#   clobbers: r2, r3
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     intc_init
 intc_init:
         e_or2i      r2, ivor4_handler@l         #< register handler
         mtivor4     r2                          #

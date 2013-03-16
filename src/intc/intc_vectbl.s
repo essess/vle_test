@@ -3,7 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "core\intc.i"
+        .include    "intc.i"
+        .include    "intc_prv.i"
+        .include    "core\intc_regs.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   Vector address table for all external interrupts. See the RM
@@ -11,7 +13,6 @@
 #   Load vectors at runtime with intc_reg_handler
 # -----------------------------------------------------------------------------
         .section    .vectbl, data
-        .public     intc_vectbl
 intc_vectbl:
         vector      0    #< 
         vector      1    #< 
@@ -383,12 +384,11 @@ intc_vectbl:
 #   default vector handler for above table
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     vec_default
-        .weak       vec_default
-vec_default:
+        .weak       intc_vec_default
+intc_vec_default:
         se_nop
         se_blr
-.function   "vec_default", vec_default, .-vec_default
+.function   "intc_vec_default", intc_vec_default, .-intc_vec_default
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

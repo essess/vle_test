@@ -3,9 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "reg.i"
-            .ifndef     _SWT_I_
-_SWT_I_     .equ        1
+             .include    "reg.i"
+             .ifndef     _SWT_REGS_I_
+_SWT_REGS_I_ .equ        1
 # -----------------------------------------------------------------------------
 reg_base    SWT, $fff38000          #< software watchdog timer
 # -----------------------------------------------------------------------------

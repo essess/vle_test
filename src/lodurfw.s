@@ -3,7 +3,7 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "core\intc.i"
+        .include    "core\intc_regs.i"
         .include    "led.i"
         .extern     intc_reg_handler
 # -----------------------------------------------------------------------------

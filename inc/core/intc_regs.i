@@ -3,9 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "reg.i"
-            .ifndef     _INTC_I_
-_INTC_I_    .equ        1
+              .include    "reg.i"
+              .ifndef     _INTC_REGS_I_
+_INTC_REGS_I_ .equ        1
 # -----------------------------------------------------------------------------
 reg_base    INTC, $fff48000         #< interrupt controller
 # -----------------------------------------------------------------------------
@@ -826,16 +826,6 @@ reg         INTC, PSR511,     $023f
 reg         INTC, PSR510,     $023e
 reg         INTC, PSR509,     $023d
 reg         INTC, PSR508,     $023c
-
-# -----------------------------------------------------------------------------
-vector: .macro      num
-        .section    .debug
-        .type       vec&&num&&_handler, @object
-        .previous
-        .public     vec&&num&&_handler
-vec&&num&&_handler:
-        .long       vec_default
-.endm
 # -----------------------------------------------------------------------------
             .endif
 # -----------------------------------------------------------------------------

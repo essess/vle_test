@@ -3,7 +3,7 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "core\siu.i"
+            .include    "core\siu_regs.i"
             .ifndef     _LED_PRV_I_
 _LED_PRV_I_ .equ        1
 # -----------------------------------------------------------------------------

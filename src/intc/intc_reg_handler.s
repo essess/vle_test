@@ -3,20 +3,18 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .extern     intc_vectbl
+        .include    "intc.i"
+        .include    "intc_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   register a runtime interrupt handler
 #   args:
 #       r2: your function address
 #       r3: vector #
-#   retval:
-#       none
-#   clobbers:
-#       r3, r4
+#   retval: none
+#   clobbers: r3, r4
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     intc_reg_handler
 intc_reg_handler:
         e_lis       r4, intc_vectbl@h
         e_or2i      r4, intc_vectbl@l
