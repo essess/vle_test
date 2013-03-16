@@ -836,9 +836,8 @@ vector: .macro      num
 vec&&num&&_handler:
         .long       vec_default
 .endm
-
+# -----------------------------------------------------------------------------
             .endif
-
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

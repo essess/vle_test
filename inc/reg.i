@@ -33,9 +33,8 @@ reg:        .macro  scope, name, offset
 scope&&_&&name&&_OFFSET     .equ    offset
 scope&&_&&name&&            .equ    scope&&_BASE + scope&&_&&name&&_OFFSET
 .endm
-
+# -----------------------------------------------------------------------------
             .endif
-
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
