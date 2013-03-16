@@ -3,11 +3,15 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
+        .include    "tb.i"
+# -----------------------------------------------------------------------------
 #   @public
 #   timebase reset/init
+#   args: none
+#   retval: none
+#   clobbers: r2
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     tb_init
 tb_init:
         se_li       r2, 0
         mttbu       r2                      #< wipe timebase

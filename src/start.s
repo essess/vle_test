@@ -3,9 +3,9 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "swt.i"
-        .include    "siu.i"
-        .include    "fmpll.i"
+        .include    "core\swt.i"
+        .include    "core\siu.i"
+        .include    "core\fmpll.i"
 
         .extern     main
         .extern     _ecc_init_wordsize      #< linker defined, see .lcf
@@ -25,9 +25,6 @@ ESYNCR2_VAL         .equ        ( LOCDIS | LOLRDIS | LOCRDIS | LOLIRQDIS | \
 
 FMPLL_TO            .equ        160*2                     # ~160 loops typ.
 
-# -----------------------------------------------------------------------------
-#        .section    .debug
-#        .file       "start.s"
 # -----------------------------------------------------------------------------
 #   @public
 #   VLE entry point for the device side firmware of the lodur app:

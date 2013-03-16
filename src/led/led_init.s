@@ -4,6 +4,7 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "led.i"
+        .include    "led_prv.i"
 
 LEDINIT_PCR .equ        ( PA_GPIO | OBE_ENAB | DSC_50PF | ODE_ENAB | \
                           SRC_MAX | WPE_DIS )

@@ -5,33 +5,18 @@
 # -----------------------------------------------------------------------------
             .ifndef     _LED_I_
 _LED_I_     .equ        1
-
-            .include    "siu.i"
+# -----------------------------------------------------------------------------
 
 LED0        .equ        0
-LED0_PCR    .equ        SIU_PCR188
-LED0_GPDO   .equ        SIU_GPDO188
-
 LED1        .equ        1
-LED1_PCR    .equ        SIU_PCR189
-LED1_GPDO   .equ        SIU_GPDO189
-
 LED2        .equ        2
-LED2_PCR    .equ        SIU_PCR190
-LED2_GPDO   .equ        SIU_GPDO190
-
 LED3        .equ        3
-LED3_PCR    .equ        SIU_PCR191
-LED3_GPDO   .equ        SIU_GPDO191
-
-LED_OFF     .equ        PDO_VOH
-LED_ON      .equ        PDO_VOL
 
             .public     led_init
             .public     led_invert
 
+# -----------------------------------------------------------------------------
             .endif
-
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
