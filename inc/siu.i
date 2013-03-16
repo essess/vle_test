@@ -64,6 +64,7 @@ reg         SIU, GPDO188, $06bc     #< GPIO pin data out register
 reg         SIU, GPDO189, $06bd
 reg         SIU, GPDO190, $06be
 reg         SIU, GPDO191, $06bf
+# -----------------------------------------------------------------------------
             .endif
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.

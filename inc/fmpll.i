@@ -56,6 +56,7 @@ reg         FMPLL, ESYNCR2, $000c   #< synthesizer control register 1
 reg         FMPLL, ESYNCR2, $000c   #< synthesizer control register 2
 # -----------------------------------------------------------------------------
 reg         FMPLL, SYNFMMR, $0018   #< synthesizer FM modulation register
+# -----------------------------------------------------------------------------
             .endif
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
