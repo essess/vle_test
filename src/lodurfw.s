@@ -23,7 +23,7 @@ lodurfw:
 
 # TODO: mpool init for rx dma/tx dma/rx pkt buff/tx pkt buff
 
-        e_add16i    r2, r24, cb@l
+        e_add16i    r2, r24, cb@l           #< e_la refused by assem
         e_add16i    r3, r24, pool@l
         se_li       r4, 8
         se_li       r5, 16
