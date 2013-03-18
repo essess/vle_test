@@ -3,23 +3,23 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "fifo.i"
-            .ifndef     _MPOOL_I_
-_MPOOL_I_   .equ        1
+        .include    "fifo.i"
 # -----------------------------------------------------------------------------
+#   @public
+#   pop an item from the supplied fifo
+#   args: r2 - ptr to fcb
+#   retval: r3 - ptr to item
+#   clobbers:
+# -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
 
-            .public     mpool_init
-mpool_get   .textequ    "fifo_pop"
-mpool_put   .textequ    "fifo_push"
-
-# -----------------------------------------------------------------------------
-mcb:        .macro
-            .fcb                            #< mpool extends fifo functionality
-            .endm
-sizeof_mcb  .equ    sizeof_fcb
-.mcb        .textequ    "mcb"
-# -----------------------------------------------------------------------------
-            .endif
+        .section    .text_vle
+fifo_pop:
+        se_blr
+.function   "fifo_pop", fifo_pop, .-fifo_pop
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

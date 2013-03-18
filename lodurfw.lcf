@@ -1,4 +1,4 @@
-MEMORY { ram: org = 0x40000000, len = 0x17800 }     
+MEMORY { ram: org = 0x40000000, len = 0x17800 }
 SECTIONS
 {
     GROUP :
@@ -19,9 +19,5 @@ SECTIONS
         _ecc_init_wordsize = (_ecc_init_size/4);
     } > ram
 
-    /* automagically gen'd by linker, but unused. Here       */
-    /* to supress warnings.                                  */
-    .init  : {}
-    .ctors : {}
-    .dtors : {}
+    /DISCARD/ : { *(.init) *(.ctors) *(.dtors) }
 }

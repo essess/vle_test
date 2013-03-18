@@ -6,13 +6,45 @@
         .include    "mpool.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   initialize a block pool
-#   args:
-#   retval:
-#   clobbers:
+#   initialize a block pool - not threadsafe
+#   args: r2 - ptr to mpool control block (mcb)
+#         r3 - ptr to start of raw block
+#         r4 - desired number of blocks (>=2)
+#         r5 - desired sizeof blocks in bytes (>=4)
+#   retval: none
+#   clobbers: nothing more than original args
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?r30:   .long       0                       #< sizeof blks
+?r31:   .long       0                       #< topof raw blk
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
 mpool_init:
+        e_stwu      rsp, -?fs(rsp)
+        se_mflr     r0
+        se_stw      r0, ?lr(rsp)
+#       tweqi       r3, 0                   #< block ptr can't be null
+        se_stw      r31, ?r31(rsp)
+        se_mr       r31, r3
+#       twlti       r5, 4                   #< sizeof >= 4
+        se_stw      r30, ?r30(rsp)
+        se_mr       r30, r5
+#       twlti       r4, 2                   #< 2+ blocks p/raw blk
+        se_mtctr    r4
+
+        e_bl        fifo_init               #< r2 validated here
+
+# foreach block
+#   start peeling off blocks and pushing them into the fifo
+
+        se_lwz      r30, ?r30(rsp)
+        se_lwz      r31, ?r31(rsp)
+        se_lwz      r0, ?lr(rsp)
+        se_mtlr     r0
+        e_lwz       rsp, ?rsp(rsp)
         se_blr
 .function   "mpool_init", mpool_init, .-mpool_init
 # -----------------------------------------------------------------------------
