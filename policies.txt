@@ -2,13 +2,13 @@ register usage:
 this app conforms to the eabi just enough that we can leverage some of the new
 vle context saving instructions fron our irqs
 
-r0,r8-r23 - internal, dedicated for supv/os use
+r8-r23 - internal, dedicated for supv/os use
 
 rsp/r1 - dedicated - stack pointer
 r24 - dedicated - .bss base pointer
 r25 - dedicated - .data base pointer
 r26 - dedicated - .rodata base pointer
-r2,r3,r4,r5,r6,r7,cr0,lr,ctr,xer - volatile - caller saves before calling another func (callee can freely clobber as desired)
+r0,r2,r3,r4,r5,r6,r7,cr0,lr,ctr,xer - volatile - caller saves before calling another func (callee can freely clobber as desired)
 r27,r28,r29,r30,r31,cr2 - non volatile - callee saves before using and caller can depend on their safety through an fcall
 
 typically, r2/r3/r4/r5/r6/r7 are used to pass arguments to the callee, they are also used for return values to caller

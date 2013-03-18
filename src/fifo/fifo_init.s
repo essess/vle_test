@@ -3,23 +3,25 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "fifo.i"
-            .ifndef     _MPOOL_I_
-_MPOOL_I_   .equ        1
+        .include    "fifo.i"
 # -----------------------------------------------------------------------------
+#   @public
+#   initialize fifo control block (fcb) to defaults
+#   args: r2 - ptr to fcb
+#   retval:
+#   clobbers: r0
+# -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
 
-            .public     mpool_init
-mpool_get   .textequ    "fifo_pop"
-mpool_put   .textequ    "fifo_push"
-
-# -----------------------------------------------------------------------------
-mcb:        .macro
-            .fcb                            #< mpool extends fifo functionality
-            .endm
-sizeof_mcb  .equ    sizeof_fcb
-.mcb        .textequ    "mcb"
-# -----------------------------------------------------------------------------
-            .endif
+        .section    .text_vle
+fifo_init:
+        se_li       r0, 0
+        se_stw      r0, head(r2)            #< reset head ptr
+        se_blr
+.function   "fifo_init", fifo_init, .-fifo_init
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

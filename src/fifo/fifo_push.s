@@ -3,18 +3,24 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "mpool.i"
+        .include    "fifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   get a block from the pool
-#   args:
+#   push an item into the supplied fifo
+#   args: r2 - ptr to fcb
+#         r3 - ptr to item
 #   retval:
 #   clobbers:
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
-mpool_get:
+fifo_push:
         se_blr
-.function   "mpool_get", mpool_get, .-mpool_get
+.function   "fifo_push", fifo_push, .-fifo_push
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

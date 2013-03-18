@@ -3,18 +3,14 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "mpool.i"
+            .ifndef     _FFO_PRV_I_
+_FFO_PRV_I_ .equ        1
 # -----------------------------------------------------------------------------
-#   @public
-#   return a block to the pool
-#   args:
-#   retval:
-#   clobbers:
+
+
+
 # -----------------------------------------------------------------------------
-        .section    .text_vle
-mpool_put:
-        se_blr
-.function   "mpool_put", mpool_put, .-mpool_put
+            .endif
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

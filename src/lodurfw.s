@@ -6,6 +6,7 @@
         .include    "core\intc_regs.i"      #< TODO: wean out
         .include    "led.i"
         .include    "intc.i"
+        .include    "mpool.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   lodurfw: app
@@ -22,6 +23,12 @@ lodurfw:
 
 # TODO: mpool init for rx dma/tx dma/rx pkt buff/tx pkt buff
 
+        e_add16i    r2, r24, cb@l
+        e_add16i    r3, r24, pool@l
+        se_li       r4, 8
+        se_li       r5, 16
+        e_bl        mpool_init
+
         e_lis       r2, INTC_BASE@ha
         e_stb       r3, INTC_PSR0@l(r2)     #< set sw0 pri = 1
 @loop:  se_li       r3, SET
@@ -29,11 +36,16 @@ lodurfw:
         se_b        @loop
 .function   "lodurfw", lodurfw, .-lodurfw
 # -----------------------------------------------------------------------------
+        .section    .bss
+cb:     .mcb
+        .align      2
+pool:   .space      8*16                    #< 8 blks @ 16 bytes ea
+
+# -----------------------------------------------------------------------------
 #   @internal
 #   clr sw int 0 flag
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .public     clrflg0
 clrflg0:
         e_stwu      rsp, -12(rsp)
         se_stw      r4, 4(rsp)              #< push r4
