@@ -12,7 +12,7 @@
 #   consider this as a point of optimization to keep int latency low.
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .align      16
+        .align      4
 ivor10_handler:
         e_stwu      rsp, -16(rsp)           #< create frame
         se_stw      r2, 12(rsp)             #< push r2
@@ -35,7 +35,7 @@ ivor10_handler:
 .function   "ivor10_handler", ivor10_handler, .-ivor10_handler
 # -----------------------------------------------------------------------------
         .section    .bss
-        .align      4
+        .align      2
         .public     msec
 msec:   .long       0                       # system time -> READ-ONLY
 # -----------------------------------------------------------------------------
