@@ -3,20 +3,21 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "fifo.i"
             .ifndef     _MPOOL_I_
 _MPOOL_I_   .equ        1
 # -----------------------------------------------------------------------------
 
             .public     mpool_init
-mpool_get   .textequ    "fifo_pop"
-mpool_put   .textequ    "fifo_push"
+            .public     mpool_get
+            .public     mpool_put
 
 # -----------------------------------------------------------------------------
 mcb:        .macro
-            .fcb                            #< mpool extends fifo functionality
+            .align  2
+            .long   0                       #< head ptr
             .endm
-sizeof_mcb  .equ    sizeof_fcb
+sizeof_mcb  .equ    4
+head        .equ    0
 .mcb        .textequ    "mcb"
 # -----------------------------------------------------------------------------
             .endif
