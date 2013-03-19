@@ -12,7 +12,7 @@
 #   context is NOT saved here. I'm going to leave that up to you.
 # -----------------------------------------------------------------------------
         .section    .text_vle
-        .align      4
+        .align      16
 ivor4_handler:
         e_stwu      rsp, -24(rsp)
         e_stmvsrrw  16(rsp)

@@ -7,13 +7,14 @@
 _FIFO_I_    .equ        1
 # -----------------------------------------------------------------------------
 
+            .public     fifo_test
             .public     fifo_init
             .public     fifo_pop
             .public     fifo_push
 
 # -----------------------------------------------------------------------------
 fcb:        .macro
-            .align  2
+            .align  4
             .long   0                       #< head of fifo
             .endm
 sizeof_fcb  .equ    4

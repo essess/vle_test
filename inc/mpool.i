@@ -7,13 +7,14 @@
 _MPOOL_I_   .equ        1
 # -----------------------------------------------------------------------------
 
+            .public     mpool_test
             .public     mpool_init
             .public     mpool_get
             .public     mpool_put
 
 # -----------------------------------------------------------------------------
 mcb:        .macro
-            .align  2
+            .align  4
             .long   0                       #< head ptr
             .endm
 sizeof_mcb  .equ    4
