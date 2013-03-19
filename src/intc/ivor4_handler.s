@@ -11,31 +11,43 @@
 #   from INTC used in software mode. NOTE that the entire volatile register
 #   context is NOT saved here. I'm going to leave that up to you.
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?r2:    .long       0
+?r3:    .long       0
+?srr0:  .long       0
+?srr1:  .long       0
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
         .align      16
 ivor4_handler:
-        e_stwu      rsp, -24(rsp)
-        e_stmvsrrw  16(rsp)
-        se_stw      r2, 4(rsp)
-        se_mflr     r2                      #< we have to take the latency hit
-        se_stw      r2, 8(rsp)              #  of storing r2/r3 because we have
-        se_stw      r3, 12(rsp)             #  to pull IACKR before re-enb ints
-        e_lis       r2, INTC_BASE@ha        #< pull vector/ack it
+        e_stwu      rsp, -?fs(rsp)
+        e_stmvsrrw  ?srr0(rsp)
+        se_stw      r2, ?r2(rsp)
+        se_mflr     r2
+        se_stw      r2, ?lr(rsp)
+        se_stw      r3, ?r3(rsp)
+        e_lis       r2, INTC_BASE@ha
         e_lwz       r3, INTC_IACKR@l(r2)
+        se_lwz      r3, 0(r3)               #< pull vector to ack it
         wrteei      1                       #< unmask
-        se_lwz      r3, 0(r3)
+
         se_mtlr     r3
-        se_blrl                             #< go
-        se_li       r3, 0                   #< RM reccomends wr 0 to EIOR
+        se_blrl                             #< exec
+
+        se_li       r3, 0                   #< RM recommends wr 0 to EOIR
         e_lis       r2, INTC_BASE@ha        #< can't guarantee r2 was preserved
         e_stw       r3, INTC_EOIR@l(r2)
-        se_lwz      r3, 12(rsp)
-        se_lwz      r2, 8(rsp)
+
+        se_lwz      r3, ?r3(rsp)
+        se_lwz      r2, ?lr(rsp)
         se_mtlr     r2
-        se_lwz      r2, 4(rsp)
+        se_lwz      r2, ?r2(rsp)
         wrteei      0
-        e_lmvsrrw   16(rsp)
-        se_lwz      rsp, 0(rsp)
+        e_lmvsrrw   ?srr0(rsp)
+        se_lwz      rsp, ?rsp(rsp)
         se_rfi
 .function   "ivor4_handler", ivor4_handler, .-ivor4_handler
 # -----------------------------------------------------------------------------
