@@ -3,24 +3,23 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
-        .include    "led_prv.i"
+        .include    "mpool.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   invert led state - not threadsafe
-#   args: r2 - LEDn
+#   <desc>
+#   args:
 #   retval:
-#   clobbers: r3, r4
+#   clobbers: r0
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
-led_invert:
-        e_lis       r3, LED0_GPDO@h         #< load 'base' gpdo
-        e_or2i      r3, LED0_GPDO@l
-        lbzx        r4, r2, r3              #< fetch
-        e_xori      r4, r4, %1              #< invert
-        stbx        r4, r2, r3              #< write
+mpool_get:
         se_blr
-.function   "led_invert", led_invert, .-led_invert
+.function   "mpool_get", mpool_get, .-mpool_get
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

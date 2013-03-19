@@ -3,24 +3,41 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
-        .include    "led_prv.i"
+        .include    "mpool.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   invert led state - not threadsafe
-#   args: r2 - LEDn
+#   <desc>
+#   args:
 #   retval:
-#   clobbers: r3, r4
+#   clobbers: r0
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
-led_invert:
-        e_lis       r3, LED0_GPDO@h         #< load 'base' gpdo
-        e_or2i      r3, LED0_GPDO@l
-        lbzx        r4, r2, r3              #< fetch
-        e_xori      r4, r4, %1              #< invert
-        stbx        r4, r2, r3              #< write
+mpool_test:
+        e_stwu      rsp, -?fs(rsp)
+        se_mflr     r0
+        se_stw      r0, ?lr(rsp)
+
+        e_add16i    r2, r24, cb@l           #< e_la refused by assem
+        e_add16i    r3, r24, pool@l
+        se_li       r4, 8
+        se_li       r5, 16
+        e_bl        mpool_init
+
+        se_lwz      r0, ?lr(rsp)
+        se_mtlr     r0
+        se_lwz      rsp, ?rsp(rsp)
         se_blr
-.function   "led_invert", led_invert, .-led_invert
+.function   "mpool_test", mpool_test, .-mpool_test
+# -----------------------------------------------------------------------------
+        .section    .bss
+cb:     .mcb
+        .align      4
+pool:   .space      8*16                    #< 8 blks @ 16 bytes ea
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
