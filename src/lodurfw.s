@@ -21,13 +21,8 @@ lodurfw:
         e_bl        intc_reg_handler        #< reg it
         se_li       r3, 1
 
-# TODO: mpool init for rx dma/tx dma/rx pkt buff/tx pkt buff
-
-        e_add16i    r2, r24, cb@l           #< e_la refused by assem
-        e_add16i    r3, r24, pool@l
-        se_li       r4, 8
-        se_li       r5, 16
-        e_bl        mpool_init
+@again: e_bl        mpool_test
+        se_b        @again
 
         e_lis       r2, INTC_BASE@ha
         e_stb       r3, INTC_PSR0@l(r2)     #< set sw0 pri = 1
@@ -35,12 +30,6 @@ lodurfw:
         e_stb       r3, INTC_SSCIR0@l(r2)   #< assert irq synchronously
         se_b        @loop
 .function   "lodurfw", lodurfw, .-lodurfw
-# -----------------------------------------------------------------------------
-        .section    .bss
-cb:     .mcb
-        .align      2
-pool:   .space      8*16                    #< 8 blks @ 16 bytes ea
-
 # -----------------------------------------------------------------------------
 #   @internal
 #   clr sw int 0 flag

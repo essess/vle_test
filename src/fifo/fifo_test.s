@@ -3,24 +3,31 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
-        .include    "led_prv.i"
+        .include    "fifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   invert led state - not threadsafe
-#   args: r2 - LEDn
+#   <desc>
+#   args:
 #   retval:
-#   clobbers: r3, r4
+#   clobbers:
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
-led_invert:
-        e_lis       r3, LED0_GPDO@h         #< load 'base' gpdo
-        e_or2i      r3, LED0_GPDO@l
-        lbzx        r4, r2, r3              #< fetch
-        e_xori      r4, r4, %1              #< invert
-        stbx        r4, r2, r3              #< write
+fifo_test:
+        e_stwu      rsp, -?fs(rsp)
+        se_mflr     r0
+        se_stw      rsp, ?lr(rsp)
+
+
+        se_lwz      r0, ?lr(rsp)
+        se_mtlr     r0
+        se_lwz      rsp, ?rsp(rsp)
         se_blr
-.function   "led_invert", led_invert, .-led_invert
+.function   "fifo_test", fifo_test, .-fifo_test
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
