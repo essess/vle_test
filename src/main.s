@@ -14,11 +14,16 @@
 #       - blr to 'quit', the core will reset itself
 #       - rsp points to top of stack
 # -----------------------------------------------------------------------------
+        .offset
+?rsp:   .long       0
+?lr:    .long       0
+?fs     .equ        .                       #< frame size
+
         .section    .text_vle
         .public     main
-main:   e_stwu      rsp, -8(rsp)
+main:   e_stwu      rsp, -?fs(rsp)
         se_mflr     r2
-        se_stw      r2, 4(rsp)
+        se_stw      r2, ?lr(rsp)
         e_lis       r2, _startof_ram@h      #< setup int base
         mtivpr      r2                      #
         e_bl        intc_init
@@ -27,9 +32,9 @@ main:   e_stwu      rsp, -8(rsp)
         e_bl        tb_start
         wrteei      1                       #< unmask int's
         se_bl       lodurfw                 #< fire up app
-        se_lwz      r2, 4(rsp)
+        se_lwz      r2, ?lr(rsp)
         se_mtlr     r2
-        se_lwz      rsp, 0(rsp)
+        se_lwz      rsp, ?rsp(rsp)
         se_blr
 .function   "main", main, .-main
 # -----------------------------------------------------------------------------
