@@ -18,7 +18,6 @@ mcb:        .macro
             .long   0                       #< head ptr
             .endm
 sizeof_mcb  .equ    4
-head        .equ    0
 .mcb        .textequ    "mcb"
 # -----------------------------------------------------------------------------
             .endif

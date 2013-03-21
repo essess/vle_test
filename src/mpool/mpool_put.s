@@ -4,12 +4,14 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "mpool.i"
+        .include    "mpool_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   <desc>
-#   args:
+#   place supplied block into the pool - not threadsafe
+#   args: r2 - ptr to mpool control block (mcb)
+#         r3 - ptr to block
 #   retval:
-#   clobbers: r0
+#   clobbers: r0,r4
 # -----------------------------------------------------------------------------
         .offset
 ?rsp:   .long       0
@@ -18,6 +20,12 @@
 
         .section    .text_vle
 mpool_put:
+        se_li       r0, 0
+        tweq        r2, r0                  #< assert mcb ptr !null
+        tweq        r3, r0                  #< assert blk ptr !null
+        se_lwz      r4, head(r2)            #< pull head from mcb
+        se_stw      r4, link(r3)            #< place head in link of new blk
+        se_stw      r3, head(r2)            #< place blk as new head
         se_blr
 .function   "mpool_put", mpool_put, .-mpool_put
 # -----------------------------------------------------------------------------

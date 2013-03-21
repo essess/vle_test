@@ -4,12 +4,13 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "mpool.i"
+        .include    "mpool_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   <desc>
-#   args:
-#   retval:
-#   clobbers: r0
+#   pull a block from the pool - not threadsafe
+#   args: r2 - ptr to mpool control block (mcb)
+#   retval: r3 - ptr to block, null if empty
+#   clobbers: r0,r4
 # -----------------------------------------------------------------------------
         .offset
 ?rsp:   .long       0
@@ -18,7 +19,15 @@
 
         .section    .text_vle
 mpool_get:
-        se_blr
+        se_li       r0, 0
+        tweq        r2, r0                  #< assert mcb ptr !null
+        se_lwz      r3, head(r2)            #< pull head from mcb
+        se_cmpi     r3, 0                   #< anything left ?
+        se_beq      @empty                  #  nope
+        se_lwz      r4, link(r3)            #< pull link of blk head pts to
+        se_stw      r4, head(r2)            #< store link as new head
+        se_stw      r0, link(r3)            #< just in case, 0 link field
+@empty: se_blr
 .function   "mpool_get", mpool_get, .-mpool_get
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.

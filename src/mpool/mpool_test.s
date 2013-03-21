@@ -6,14 +6,27 @@
         .include    "mpool.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   <desc>
+#   exercise the mpool api and provide usage examples
 #   args:
 #   retval:
-#   clobbers: r0
+#   clobbers: r0,r2,r3,r4,r5
+# -----------------------------------------------------------------------------
+#   note: no size checks are done. if a raw block was cutup into 8 blocks,
+#         there is no code to prevent a 9th block from another pool to be
+#         _put() back. 
+# -----------------------------------------------------------------------------
+#   note: if a block from another pool is inserted into another pool, there are
+#         no checks/tracking to prevent this from happening. this has some
+#         advantages such that you could have a huge single pre-initialized
+#         pool and multiple 'sub' mcb's to disperse across - thus anyone can
+#         'own' a block
+# -----------------------------------------------------------------------------
+#   note: there is no way to prevent _put()ing duplicate blocks into the pool
 # -----------------------------------------------------------------------------
         .offset
 ?rsp:   .long       0
 ?lr:    .long       0
+?r31:   .long       0
 ?fs     .equ        .                       #< frame size
 
         .section    .text_vle
@@ -21,6 +34,7 @@ mpool_test:
         e_stwu      rsp, -?fs(rsp)
         se_mflr     r0
         se_stw      r0, ?lr(rsp)
+        se_stw      r31, ?r31(rsp)
 
         e_add16i    r2, r24, cb@l           #< e_la refused by assem
         e_add16i    r3, r24, pool@l
@@ -28,6 +42,34 @@ mpool_test:
         se_li       r5, 16
         e_bl        mpool_init
 
+        se_li       r31, 0
+@get:   e_bl        mpool_get
+        se_cmpi     r3, 0
+        se_addi     r31, 1
+        e_bne       @get                    #< exhaust what we just made
+        # r31 == 9 (8+1(chk fail))
+
+        # at this point head is null and pool is completely wiped
+        # manually walk the pool 8x16 and start _put()ing back blocks
+
+        e_add16i    r3, r24, pool@l
+        e_bl        mpool_put           #< 8
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 7
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 6
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 5
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 4
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 3
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 2
+        se_addi     r3, 16
+        e_bl        mpool_put           #< 1
+
+        se_lwz      r31, ?r31(rsp)
         se_lwz      r0, ?lr(rsp)
         se_mtlr     r0
         se_lwz      rsp, ?rsp(rsp)
@@ -38,6 +80,8 @@ mpool_test:
 cb:     .mcb
         .align      4
 pool:   .space      8*16                    #< 8 blks @ 16 bytes ea
+endof_pool:
+sizeof_pool     .equ    (endof_pool-pool)/4
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
