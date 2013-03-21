@@ -4,6 +4,7 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "mpool.i"
+        .include    "mpool_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   initialize a block pool - not threadsafe
