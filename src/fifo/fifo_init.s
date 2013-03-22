@@ -7,7 +7,7 @@
         .include    "fifo_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   initialize fifo control block (fcb) to defaults
+#   initialize fifo control block (fcb) to defaults - not threadsafe
 #   args: r2 - ptr to fcb
 #   retval:
 #   clobbers: r0

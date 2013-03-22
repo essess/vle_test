@@ -17,8 +17,7 @@ tail:       .long   0                       #< tail field offset of .fcb
 
             .section    .bss
             .offset
-prev:       .long   0                       #< prev field offset of fifo item
-next:       .long   0                       #< next field offset of fifo item
+next:       .long   0                       #< link to next item in the fifo
             sizechk ., sizeof_flink
 
 # -----------------------------------------------------------------------------

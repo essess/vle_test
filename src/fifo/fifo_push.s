@@ -4,13 +4,14 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "fifo.i"
+        .include    "fifo_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   push an item into the front of the supplied fifo
+#   push an item into the back (tail) of the supplied fifo - not threadsafe
 #   args: r2 - ptr to fcb
 #         r3 - ptr to item
 #   retval:
-#   clobbers:
+#   clobbers: r0,r4
 # -----------------------------------------------------------------------------
         .offset
 ?rsp:   .long       0
@@ -19,6 +20,18 @@
 
         .section    .text_vle
 fifo_push:
+        se_li       r0, 0
+        tweq        r0, r2                  #< assert fcb ptr !null
+        tweq        r0, r3                  #< assert item ptr !null
+        se_stw      r0, next(r3)            #< terminate new item
+        se_lwz      r4, tail(r2)            #< grab ptr to curr last item
+        se_cmpi     r4, 0                   #< if tail null,
+        se_beq      @1f                     #  0 items in fifo, else
+        se_stw      r3, next(r4)            #< pnt curr item back to new item
+        se_stw      r3, tail(r2)            #< pnt tail to new item
+        se_blr
+@1f:    se_stw      r3, head(r2)            #< pnt head to new item
+        se_stw      r3, tail(r2)            #< pnt tail to new item
         se_blr
 .function   "fifo_push", fifo_push, .-fifo_push
 # -----------------------------------------------------------------------------
