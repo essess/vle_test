@@ -6,7 +6,7 @@
         .include    "fifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   push an item into the supplied fifo
+#   push an item into the front of the supplied fifo
 #   args: r2 - ptr to fcb
 #         r3 - ptr to item
 #   retval:

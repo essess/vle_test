@@ -17,6 +17,7 @@ fifo_init:
         se_li       r0, 0
         tweq        r2, r0                  #< fcb ptr can't be null
         se_stw      r0, head(r2)            #< reset head ptr
+        se_stw      r0, tail(r2)            #< reset tail ptr
         se_blr
 .function   "fifo_init", fifo_init, .-fifo_init
 # -----------------------------------------------------------------------------
