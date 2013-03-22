@@ -6,7 +6,7 @@
         .include    "fifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   pop an item from the supplied fifo
+#   pop an item from the back of supplied fifo
 #   args: r2 - ptr to fcb
 #   retval: r3 - ptr to item
 #   clobbers:
