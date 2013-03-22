@@ -3,29 +3,16 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-            .include    "mpool.i"
-            .include    "sizechk.i"
-            .ifndef     _MP_PRV_I_
-_MP_PRV_I_  .equ        1
+            .ifndef     _SIZECHK_I_
+_SIZECHK_I_ .equ        1
 # -----------------------------------------------------------------------------
 
-            .section    .bss
-            .offset
-head:       .long   0                       #< head field offset of .mcb
-            sizechk ., sizeof_mcb
-
-            .section    .bss
-sizeof_mlink .equ   4
-mlink:      .macro                          #< unused, here for completeness
-            .align  4
-            .space  sizeof_mlink
+sizechk:    .macro      actual_size, chk_size
+            .if actual_size != chk_size
+            .section    .debug
+            .error "size mismatch"
+            .endif
             .endm
-.mlink      .textequ    "mlink"
-
-            .section    .bss
-            .offset
-link:       .long   0                       #< link field offset of mpool blk
-            sizechk ., sizeof_mlink
 
 # -----------------------------------------------------------------------------
             .endif

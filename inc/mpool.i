@@ -13,11 +13,11 @@ _MPOOL_I_   .equ        1
             .public     mpool_put
 
 # -----------------------------------------------------------------------------
+sizeof_mcb  .equ    4
 mcb:        .macro
             .align  4
-            .long   0                       #< head ptr
+            .space  sizeof_mcb
             .endm
-sizeof_mcb  .equ    4
 .mcb        .textequ    "mcb"
 # -----------------------------------------------------------------------------
             .endif
