@@ -13,13 +13,19 @@ _FIFO_I_    .equ        1
             .public     fifo_push
 
 # -----------------------------------------------------------------------------
+sizeof_fcb  .equ    8
 fcb:        .macro
             .align  4
-            .long   0                       #< head of fifo
+            .space  sizeof_fcb
             .endm
-sizeof_fcb  .equ    4
-head        .equ    0
 .fcb        .textequ    "fcb"
+# -----------------------------------------------------------------------------
+sizeof_flink .equ   8
+flink:      .macro
+            .align  4
+            .space  sizeof_flink
+            .endm
+.flink      .textequ    "flink"
 # -----------------------------------------------------------------------------
             .endif
 # -----------------------------------------------------------------------------

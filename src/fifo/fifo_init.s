@@ -4,6 +4,7 @@
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
         .include    "fifo.i"
+        .include    "fifo_prv.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   initialize fifo control block (fcb) to defaults

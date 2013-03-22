@@ -3,11 +3,23 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
+            .include    "fifo.i"
+            .include    "sizechk.i"
             .ifndef     _FFO_PRV_I_
 _FFO_PRV_I_ .equ        1
 # -----------------------------------------------------------------------------
 
+            .section    .bss
+            .offset
+head:       .long   0                       #< head field offset of .fcb
+tail:       .long   0                       #< tail field offset of .fcb
+            sizechk ., sizeof_fcb
 
+            .section    .bss
+            .offset
+prev:       .long   0                       #< prev field offset of fifo item
+next:       .long   0                       #< next field offset of fifo item
+            sizechk ., sizeof_flink
 
 # -----------------------------------------------------------------------------
             .endif

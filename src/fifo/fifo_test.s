@@ -6,7 +6,7 @@
         .include    "fifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   <desc>
+#   exercise fifo api
 #   args:
 #   retval:
 #   clobbers:
@@ -22,12 +22,36 @@ fifo_test:
         se_mflr     r0
         se_stw      rsp, ?lr(rsp)
 
+        e_add16i    r2, r24, fifo@l
+        e_bl        fifo_init
+
+        # push all
+        # validate head/tail/prev/next
+        # pop all
+        # validate head/tail/prev/next all 0'd
 
         se_lwz      r0, ?lr(rsp)
         se_mtlr     r0
         se_lwz      rsp, ?rsp(rsp)
         se_blr
 .function   "fifo_test", fifo_test, .-fifo_test
+# -----------------------------------------------------------------------------
+        .section    .bss
+fifo:   .fcb
+
+        .offset
+        .flink      #< MUST be reserved at TOP of fifo item
+field1: .long   0
+field2: .long   0
+field3: .long   0
+sizeof_fifoitem .equ    .
+
+item0:  .space  sizeof_fifoitem     #< simple hardcoding for testing
+item2:  .space  sizeof_fifoitem
+item3:  .space  sizeof_fifoitem
+item4:  .space  sizeof_fifoitem
+item5:  .space  sizeof_fifoitem
+
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
