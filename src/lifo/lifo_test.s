@@ -3,13 +3,30 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
-        .include    "esci.i"
-        .include    "fifo.i"
         .include    "lifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   lodurfw: app
+#   exercise lifo api
+#   args:
+#   retval:
+#   clobbers:
+# -----------------------------------------------------------------------------
+        .section    .bss
+        .offset
+        .llink
+field1: .long   0
+field2: .long   0
+field3: .long   0
+sizeof_lifoitem .equ    .
+
+        .section    .bss
+lifo:   .lcb
+
+item0:  .space  sizeof_lifoitem     #< simple hardcoding for testing
+item1:  .space  sizeof_lifoitem
+item2:  .space  sizeof_lifoitem
+item3:  .space  sizeof_lifoitem
+item4:  .space  sizeof_lifoitem
 # -----------------------------------------------------------------------------
         .offset
 ?rsp:   .long       0
@@ -17,25 +34,63 @@
 ?fs     .equ        .                       #< frame size
 
         .section    .text_vle
-        .public     lodurfw
-lodurfw:
+lifo_test:
         e_stwu      rsp, -?fs(rsp)
         se_mflr     r0
         se_stw      r0, ?lr(rsp)
 
-        e_bl        led_init
-        e_bl        esci_init
+        e_add16i    r2, r24, lifo@l
+        e_bl        lifo_init
 
-@loop:  wait
-        e_bl        lifo_test
-        e_bl        fifo_test
-        se_b        @loop
+        # push all
+        e_add16i    r3, r24, item0@l
+        se_li       r0, 1
+        se_stw      r0, field1(r3)
+        se_stw      r0, field2(r3)
+        se_stw      r0, field3(r3)
+        e_bl        lifo_push
+
+        e_add16i    r3, r24, item1@l
+        se_li       r0, 2
+        se_stw      r0, field1(r3)
+        se_stw      r0, field2(r3)
+        se_stw      r0, field3(r3)
+        e_bl        lifo_push
+
+        e_add16i    r3, r24, item2@l
+        se_li       r0, 3
+        se_stw      r0, field1(r3)
+        se_stw      r0, field2(r3)
+        se_stw      r0, field3(r3)
+        e_bl        lifo_push
+
+        e_add16i    r3, r24, item3@l
+        se_li       r0, 4
+        se_stw      r0, field1(r3)
+        se_stw      r0, field2(r3)
+        se_stw      r0, field3(r3)
+        e_bl        lifo_push
+
+        e_add16i    r3, r24, item4@l
+        se_li       r0, 5
+        se_stw      r0, field1(r3)
+        se_stw      r0, field2(r3)
+        se_stw      r0, field3(r3)
+        e_bl        lifo_push
+
+        # pop all
+        e_bl        lifo_pop    #< 5
+        e_bl        lifo_pop    #< 4
+        e_bl        lifo_pop    #< 3
+        e_bl        lifo_pop    #< 2
+        e_bl        lifo_pop    #< 1
+        # validate head/prev all 0'd
 
         se_lwz      r0, ?lr(rsp)
         se_mtlr     r0
         se_lwz      rsp, ?rsp(rsp)
         se_blr
-.function   "lodurfw", lodurfw, .-lodurfw
+.function   "lifo_test", lifo_test, .-lifo_test
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

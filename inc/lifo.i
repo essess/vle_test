@@ -3,39 +3,33 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
-        .include    "esci.i"
-        .include    "fifo.i"
-        .include    "lifo.i"
+            .include    "mpool.i"
+            .ifndef     _LIFO_I_
+_LIFO_I_    .equ        1
 # -----------------------------------------------------------------------------
-#   @public
-#   lodurfw: app
+
+            .public     lifo_test
+            .public     lifo_init
+lifo_pop    .textequ    "mpool_get"         #< one in the same except we need
+lifo_push   .textequ    "mpool_put"         #  to expose .llink for someone
+                                            #  who wants to subclass
+
 # -----------------------------------------------------------------------------
-        .offset
-?rsp:   .long       0
-?lr:    .long       0
-?fs     .equ        .                       #< frame size
-
-        .section    .text_vle
-        .public     lodurfw
-lodurfw:
-        e_stwu      rsp, -?fs(rsp)
-        se_mflr     r0
-        se_stw      r0, ?lr(rsp)
-
-        e_bl        led_init
-        e_bl        esci_init
-
-@loop:  wait
-        e_bl        lifo_test
-        e_bl        fifo_test
-        se_b        @loop
-
-        se_lwz      r0, ?lr(rsp)
-        se_mtlr     r0
-        se_lwz      rsp, ?rsp(rsp)
-        se_blr
-.function   "lodurfw", lodurfw, .-lodurfw
+sizeof_lcb  .equ    sizeof_mcb
+lcb:        .macro                          #< alias for mcb
+            .align  4
+            .space  sizeof_lcb
+            .endm
+.lcb        .textequ    "lcb"
+# -----------------------------------------------------------------------------
+sizeof_llink .equ   4
+llink:      .macro                          #< to subclass, embed this into the
+            .align  4                       #  top of your adt
+            .space  sizeof_llink
+            .endm
+.llink      .textequ    "llink"
+# -----------------------------------------------------------------------------
+            .endif
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>

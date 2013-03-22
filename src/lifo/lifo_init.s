@@ -3,39 +3,21 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
-        .include    "esci.i"
-        .include    "fifo.i"
         .include    "lifo.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   lodurfw: app
+#   initialize lifo control block (lcb) to defaults
+#   args: r2 - ptr to lcb
+#   retval:
+#   clobbers: r0
 # -----------------------------------------------------------------------------
-        .offset
-?rsp:   .long       0
-?lr:    .long       0
-?fs     .equ        .                       #< frame size
-
         .section    .text_vle
-        .public     lodurfw
-lodurfw:
-        e_stwu      rsp, -?fs(rsp)
-        se_mflr     r0
-        se_stw      r0, ?lr(rsp)
-
-        e_bl        led_init
-        e_bl        esci_init
-
-@loop:  wait
-        e_bl        lifo_test
-        e_bl        fifo_test
-        se_b        @loop
-
-        se_lwz      r0, ?lr(rsp)
-        se_mtlr     r0
-        se_lwz      rsp, ?rsp(rsp)
+lifo_init:
+        se_li       r0, 0
+        tweq        r2, r0                  #< lcb ptr can't be null
+        se_stw      r0, 0(r2)               #< reset head ptr
         se_blr
-.function   "lodurfw", lodurfw, .-lodurfw
+.function   "lifo_init", lifo_init, .-lifo_init
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
