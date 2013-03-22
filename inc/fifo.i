@@ -20,9 +20,9 @@ fcb:        .macro
             .endm
 .fcb        .textequ    "fcb"
 # -----------------------------------------------------------------------------
-sizeof_flink .equ   8
-flink:      .macro
-            .align  4
+sizeof_flink .equ   4
+flink:      .macro                          #< to subclass, embed this into the
+            .align  4                       #  top of your adt
             .space  sizeof_flink
             .endm
 .flink      .textequ    "flink"
