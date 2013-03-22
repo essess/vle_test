@@ -21,7 +21,7 @@
 esci_init:
         e_stwu      rsp, -?fs(rsp)
         se_mflr     r0
-        se_stw      rsp, ?lr(rsp)
+        se_stw      r0, ?lr(rsp)
 
         se_lwz      r0, ?lr(rsp)
         se_mtlr     r0
