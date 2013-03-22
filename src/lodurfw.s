@@ -5,6 +5,7 @@
 # -----------------------------------------------------------------------------
         .include    "led.i"
         .include    "esci.i"
+        .include    "fifo.i"
 # -----------------------------------------------------------------------------
 #   @public
 #   lodurfw: app
@@ -25,6 +26,7 @@ lodurfw:
         e_bl        esci_init
 
 @loop:  wait
+        e_bl        fifo_test
         se_b        @loop
 
         se_lwz      r0, ?lr(rsp)
