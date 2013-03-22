@@ -20,7 +20,7 @@
 fifo_test:
         e_stwu      rsp, -?fs(rsp)
         se_mflr     r0
-        se_stw      rsp, ?lr(rsp)
+        se_stw      r0, ?lr(rsp)
 
         e_add16i    r2, r24, fifo@l
         e_bl        fifo_init
