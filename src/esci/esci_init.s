@@ -3,11 +3,14 @@
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
 # Refer to license terms at the bottom of this file
 # -----------------------------------------------------------------------------
-        .include    "led.i"
         .include    "esci.i"
+        .include    "core\esci_regs.i"
 # -----------------------------------------------------------------------------
 #   @public
-#   lodurfw: app
+#   initialize eSCIA to application default
+#   args:
+#   retval:
+#   clobbers: r0
 # -----------------------------------------------------------------------------
         .offset
 ?rsp:   .long       0
@@ -15,23 +18,16 @@
 ?fs     .equ        .                       #< frame size
 
         .section    .text_vle
-        .public     lodurfw
-lodurfw:
+esci_init:
         e_stwu      rsp, -?fs(rsp)
         se_mflr     r0
-        se_stw      r0, ?lr(rsp)
-
-        e_bl        led_init
-        e_bl        esci_init
-
-@loop:  wait
-        se_b        @loop
+        se_stw      rsp, ?lr(rsp)
 
         se_lwz      r0, ?lr(rsp)
         se_mtlr     r0
         se_lwz      rsp, ?rsp(rsp)
         se_blr
-.function   "lodurfw", lodurfw, .-lodurfw
+.function   "esci_init", esci_init, .-esci_init
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
