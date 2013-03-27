@@ -1,38 +1,6 @@
 # -----------------------------------------------------------------------------
 # Copyright (c) 2013, Sean Stasiak. All rights reserved.
 # Developed by: Sean Stasiak <sstasiak@gmail.com>
-# Refer to license terms at the bottom of this file
-# -----------------------------------------------------------------------------
-            .include    "mpool.i"
-            .ifndef     _LIFO_I_
-_LIFO_I_    .equ        1
-# -----------------------------------------------------------------------------
-
-            .public     lifo_test
-            .public     lifo_init
-lifo_pop    .textequ    "mpool_get"         #< one in the same except we need
-lifo_push   .textequ    "mpool_put"         #  to expose .llink for someone
-                                            #  who wants to subclass
-
-# -----------------------------------------------------------------------------
-sizeof_lcb  .equ    sizeof_mcb
-lcb:        .macro                          #< alias for mcb
-            .align  4
-            .space  sizeof_lcb
-            .endm
-.lcb        .textequ    "lcb"
-# -----------------------------------------------------------------------------
-sizeof_llink .equ   4
-llink:      .macro                          #< to subclass, embed this into the
-            .align  4                       #  top of your adt
-            .space  sizeof_llink
-            .endm
-.llink      .textequ    "llink"
-# -----------------------------------------------------------------------------
-            .endif
-# -----------------------------------------------------------------------------
-# Copyright (c) 2013, Sean Stasiak. All rights reserved.
-# Developed by: Sean Stasiak <sstasiak@gmail.com>
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
